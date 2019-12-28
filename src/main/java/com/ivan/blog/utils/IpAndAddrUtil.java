@@ -63,13 +63,18 @@ public class IpAndAddrUtil {
      * 获取发起请求的浏览器版本号
      */
     public static String getBrowserVersion(HttpServletRequest request) {
+        String str = "";
         String header = request.getHeader("User-Agent");
         UserAgent userAgent = UserAgent.parseUserAgentString(header);
         //获取浏览器信息
         Browser browser = userAgent.getBrowser();
         //获取浏览器版本号
         Version version = browser.getVersion(header);
-        return version.getVersion();
+        if(version != null){
+            return version.getVersion();
+        }
+
+        return str;
     }
 
     /**

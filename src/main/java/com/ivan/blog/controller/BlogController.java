@@ -8,7 +8,7 @@ import com.ivan.blog.model.SysView;
 import com.ivan.blog.model.dto.BlogArticleDTO;
 import com.ivan.blog.model.dto.BlogCommentDTO;
 import com.ivan.blog.service.*;
-import com.ivan.blog.utils.IpUtil;
+import com.ivan.blog.utils.IpAndAddrUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -19,10 +19,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  *  @Author: Ivan
@@ -30,7 +27,7 @@ import java.util.Map;
  *  @Date: 2019/12/2 11:42
  */
 @Controller
-//@CrossOrigin        //解决前端跨域问题
+@CrossOrigin        //解决前端跨域问题
 @RequestMapping("/blog")
 @AllArgsConstructor
 @Slf4j
@@ -50,11 +47,6 @@ public class BlogController {
     @ResponseBody
     public List<BlogArticle> blogIndex(){
         List<BlogArticle> result = blogArticleService.selectListByRand();
-        //浏览量记录
-        SysView sysView = new SysView();
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        sysView.setIp(IpUtil.getRemoteIp(request));
-        sysViewService.save(sysView);
 
         return result;
     }
@@ -100,6 +92,7 @@ public class BlogController {
      * @param id
      * @return
      */
+    @MyLog("访问博文内容")
     @RequestMapping("/getArticle")
     @ResponseBody
     public BlogArticleDTO getArticle(Integer id){
@@ -152,7 +145,7 @@ public class BlogController {
      * 发表评论
      * @return
      */
-    @MyLog("发表了评论")
+    @MyLog("发表评论")
     @RequestMapping("/postComment")
     @ResponseBody
     public Map<String,Object> postComment(BlogCommentDTO blogCommentDTO){
@@ -178,7 +171,7 @@ public class BlogController {
      * 统计各数量
      * @return
      */
-    @MyLog("访问了博主信息")
+    @MyLog("访问博主信息")
     @RequestMapping("/getStatistical")
     @ResponseBody
     public Map<String,Integer> getStatistical(){

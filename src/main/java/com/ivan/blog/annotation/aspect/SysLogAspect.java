@@ -1,13 +1,11 @@
 package com.ivan.blog.annotation.aspect;
 
-import com.alibaba.fastjson.JSON;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysLog;
 import com.ivan.blog.model.SysUser;
 import com.ivan.blog.service.SysLogService;
 import com.ivan.blog.utils.CurrentUserUtil;
 import com.ivan.blog.utils.IpAndAddrUtil;
-import com.ivan.blog.utils.IpUtil;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -15,9 +13,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
@@ -63,28 +59,44 @@ public class SysLogAspect {
         MyLog myLog = method.getAnnotation(MyLog.class);
         if (myLog != null) {
             String value = myLog.value();
-            //保存获取的操作
-            sysLog.setOperation(value);
+            if(StringUtils.isNotBlank(value)){
+                //保存获取的操作
+                sysLog.setOperation(value);
+            }
         }
 
         //获取请求的类名
         String className = joinPoint.getTarget().getClass().getName();
         //获取请求的方法名
         String methodName = method.getName();
-        sysLog.setMethod(className + "." + methodName);
+        if(StringUtils.isNotBlank(className) && StringUtils.isNotBlank(methodName)){
+            sysLog.setMethod(className + "." + methodName);
+        }
 
         //获取用户ip地址
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        sysLog.setIp(IpAndAddrUtil.getIp(request));
+        String ip = IpAndAddrUtil.getIp(request);
+        if(StringUtils.isNotBlank(ip)){
+            sysLog.setIp(ip);
+        }
 
         //获取浏览器名称
-        sysLog.setBrowser(IpAndAddrUtil.getBrowserName(request));
+        String browserName = IpAndAddrUtil.getBrowserName(request);
+        if(StringUtils.isNotBlank(browserName)){
+            sysLog.setBrowser(browserName);
+        }
 
         //获取浏览器版本
-        sysLog.setVersion(IpAndAddrUtil.getBrowserVersion(request));
+        String browserVersion = IpAndAddrUtil.getBrowserVersion(request);
+        if(StringUtils.isNotBlank(browserVersion)){
+            sysLog.setVersion(browserVersion);
+        }
 
         //获取操作系统
-        sysLog.setSystem(IpAndAddrUtil.getOsName(request));
+        String osName = IpAndAddrUtil.getOsName(request);
+        if(StringUtils.isNotBlank(osName)){
+            sysLog.setSystem(osName);
+        }
 
         //获取当前时间
         sysLog.setCreateTime(new Date());
