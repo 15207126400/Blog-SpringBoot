@@ -149,11 +149,11 @@
             <version>3.0.1.RELEASE</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>eu.bitwalker</groupId>
+        <dependency>
+            <groupId>nl.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>
-            <version>1.21</version>
-        </dependency>-->
+            <version>1.2.4</version>
+        </dependency>
 
     </dependencies>
 

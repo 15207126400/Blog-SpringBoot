@@ -6,7 +6,9 @@ import com.ivan.blog.model.SysLog;
 import com.ivan.blog.model.SysUser;
 import com.ivan.blog.service.SysLogService;
 import com.ivan.blog.utils.CurrentUserUtil;
+import com.ivan.blog.utils.IpAndAddrUtil;
 import com.ivan.blog.utils.IpUtil;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -29,9 +31,9 @@ import java.util.Date;
  */
 @Aspect
 @Component
+@AllArgsConstructor
 public class SysLogAspect {
-    @Autowired
-    private SysLogService sysLogService;
+    private final SysLogService sysLogService;
 
     //定义切点 @Pointcut
     //在注解的位置切入代码
@@ -45,16 +47,24 @@ public class SysLogAspect {
         //保存日志
         SysLog sysLog = new SysLog();
 
+        //获取用户名
+        SysUser sysUser = CurrentUserUtil.getCurrentUserinfo();
+        if(sysUser != null){
+            sysLog.setUsername(sysUser.getUsername());
+        } else {
+            sysLog.setUsername("博客访问用户");
+        }
+
         //从切面织入点处通过反射机制获取织入点处的方法
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        //获取切入点所在的方法
         Method method = signature.getMethod();
 
         //获取操作
         MyLog myLog = method.getAnnotation(MyLog.class);
         if (myLog != null) {
             String value = myLog.value();
-            sysLog.setOperation(value);//保存获取的操作
+            //保存获取的操作
+            sysLog.setOperation(value);
         }
 
         //获取请求的类名
@@ -63,19 +73,23 @@ public class SysLogAspect {
         String methodName = method.getName();
         sysLog.setMethod(className + "." + methodName);
 
-        sysLog.setCreateTime(new Date());
-        //获取用户名
-        SysUser sysUser = CurrentUserUtil.getCurrentUserinfo();
-        if(sysUser != null){
-            sysLog.setUsername(sysUser.getUsername());
-        } else {
-            sysLog.setUsername("博客访问用户");
-        }
         //获取用户ip地址
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        sysLog.setIp(IpUtil.getRemoteIp(request));
+        sysLog.setIp(IpAndAddrUtil.getIp(request));
+
+        //获取浏览器名称
+        sysLog.setBrowser(IpAndAddrUtil.getBrowserName(request));
+
+        //获取浏览器版本
+        sysLog.setVersion(IpAndAddrUtil.getBrowserVersion(request));
+
+        //获取操作系统
+        sysLog.setSystem(IpAndAddrUtil.getOsName(request));
+
+        //获取当前时间
+        sysLog.setCreateTime(new Date());
 
         //调用service保存SysLog实体类到数据库
-        sysLogService.insertSelective(sysLog);
+        sysLogService.save(sysLog);
     }
 }

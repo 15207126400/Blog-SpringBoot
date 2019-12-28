@@ -25,8 +25,11 @@
                                         <th>编号</th>
                                         <th>操作用户</th>
                                         <th>操作记录</th>
-                                        <th>操作时间</th>
                                         <th>ip地址</th>
+                                        <th>浏览器名</th>
+                                        <th>浏览器版本</th>
+                                        <th>操作系统</th>
+                                        <th>操作时间</th>
                                         <th>操作</th>
                                     </tr>
                                     </thead>
@@ -36,8 +39,11 @@
                                         <td th:text="${log.id}"></td>
                                         <td th:text="${log.username}"></td>
                                         <td th:text="${log.operation}"></td>
-                                        <td th:text="${#dates.format(log.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                         <td th:text="${log.ip}"></td>
+                                        <td th:text="${log.browser}"></td>
+                                        <td th:text="${log.version}"></td>
+                                        <td th:text="${log.system}"></td>
+                                        <td th:text="${#dates.format(log.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                         <td>
                                             <a href="javascript:void(0);" th:onclick="'javascript:delData('+${log.id}+')'">删除</a>
                                         </td>

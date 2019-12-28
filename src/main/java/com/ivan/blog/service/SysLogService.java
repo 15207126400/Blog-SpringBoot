@@ -1,26 +1,13 @@
 package com.ivan.blog.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ivan.blog.model.SysLog;
-
-import java.util.List;
 
 /*
  *  @Author: Ivan
  *  @Description:
  *  @Date: 2019/11/14 09:48
  */
-public interface SysLogService {
-    List<SysLog> list();
+public interface SysLogService extends IService<SysLog> {
 
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(SysLog record);
-
-    int insertSelective(SysLog record);
-
-    SysLog selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(SysLog record);
-
-    int updateByPrimaryKey(SysLog record);
 }

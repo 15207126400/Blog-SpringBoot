@@ -1,10 +1,13 @@
 package com.ivan.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysLog;
 import com.ivan.blog.service.SysLogService;
 import com.ivan.blog.service.SysRoleService;
 import com.ivan.blog.utils.MD5Util;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +27,11 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/log")
+@AllArgsConstructor
 @Slf4j
 public class LogController {
 
-    @Autowired
-    private SysLogService sysLogService;
+    private final SysLogService sysLogService;
 
     /**
      * 列表查询.
@@ -38,9 +41,9 @@ public class LogController {
     @RequestMapping("/logList")
     @RequiresPermissions("log:list")
     public String logList(Model model){
-        List<SysLog> list = sysLogService.list();
-        model.addAttribute("logs",list);
-        log.info("【执行日志列表查询操作: /log/logList】");
+        LambdaQueryWrapper<SysLog> logLambdaQueryWrapper = Wrappers.<SysLog>lambdaQuery()
+                .orderByDesc(SysLog::getId);
+        model.addAttribute("logs",sysLogService.list(logLambdaQueryWrapper));
 
         return "log/logList";
     }
@@ -55,8 +58,8 @@ public class LogController {
     @RequiresPermissions("log:del")
     public Map<String, Integer> logDel(Integer id){
         Map<String, Integer> map = new HashMap<>();
-        int num = sysLogService.deleteByPrimaryKey(id);
-        if(num > 0){
+        boolean result = sysLogService.removeById(id);
+        if(result){
             map.put("status",200);
         }
 
