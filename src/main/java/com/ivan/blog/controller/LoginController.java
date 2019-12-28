@@ -1,0 +1,153 @@
+package com.ivan.blog.controller;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.servlet.http.HttpServletRequest;
+
+import com.ivan.blog.annotation.MyLog;
+import com.ivan.blog.model.SysUser;
+import com.ivan.blog.service.*;
+import com.ivan.blog.utils.CurrentUserUtil;
+import com.ivan.blog.utils.MD5Util;
+import lombok.AllArgsConstructor;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+//@AllArgsConstructor
+public class LoginController {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private SysUserService sysUserService;
+    @Autowired
+    private StatisticsService statisticsService;
+
+    //用户登录次数计数  redisKey 前缀
+    private String SHIRO_LOGIN_COUNT = "shiro-login-count";
+    //用户登录是否被锁定    一小时 redisKey 前缀
+    private String SHIRO_IS_LOCK = "shiro-is-lock";
+    //用户登录剩余次数
+    private String SHIRO_LOGIN_LEFTCOUNT="shiro-login-left-count";
+
+    @RequestMapping({"/","/index"})
+    public String index(Model model){
+        //获取当前登录用户信息
+        SysUser user = CurrentUserUtil.getCurrentUserinfo();
+        model.addAttribute("userinfo",user);
+
+        return "index";
+    }
+
+    @RequestMapping(value = "/home",method = RequestMethod.GET)
+    public String home(Model model){
+        //博客数据统计(博客数,标签数,评论数)
+        model.addAttribute("blogOv",statisticsService.blogOv());
+        model.addAttribute("blogBackOv",statisticsService.blogBackOv());
+
+        return "home";
+    }
+
+    @RequestMapping(value="/lock",method=RequestMethod.GET)
+    public String lock(){
+        return "lock";
+    }
+
+    @MyLog(value = "用户登出操作")
+    @RequestMapping(value="/logout",method=RequestMethod.GET)
+    public String logout(){
+        Session session = SecurityUtils.getSubject().getSession();
+        session.stop();
+        return "login";
+    }
+
+    //每次登陆都对用户进行判断，如果被锁定了，直接跳转到lock
+    @RequestMapping(value="/login",method=RequestMethod.GET)
+    public String login(){
+        Session session = SecurityUtils.getSubject().getSession();
+        String islockString=(String) session.getAttribute("user");
+        if(islockString==null){
+            return "login";
+        }else{
+            return "lock";
+        }
+    }
+
+    @MyLog(value = "用户登录操作")
+    @RequestMapping(value="/ajaxLogin",method=RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> submitLogin(String username,String password,Boolean rememberMe) {
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        Map<String, String> map=new HashMap<String, String>();
+
+        Session session = SecurityUtils.getSubject().getSession();
+        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
+        if(stringRedisTemplate.hasKey(SHIRO_LOGIN_COUNT+username)){
+            //计数大于5时，设置用户被锁定一小时
+            if(Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT+username))>=5){
+                opsForValue.set(SHIRO_IS_LOCK+username, "LOCK");
+                stringRedisTemplate.expire(SHIRO_IS_LOCK+username, 1, TimeUnit.HOURS);
+
+            }
+        }
+        opsForValue.increment(SHIRO_LOGIN_COUNT+username, 1);
+        int leftcount=5-Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT+username));
+        opsForValue.set(SHIRO_LOGIN_LEFTCOUNT+username, String.valueOf(leftcount));
+        stringRedisTemplate.expire(SHIRO_LOGIN_LEFTCOUNT+username, 1, TimeUnit.HOURS);
+
+        try {
+            if ("LOCK".equals(opsForValue.get(SHIRO_IS_LOCK+username))){
+                session.setAttribute("user", "lock");
+                session.setTimeout(60);
+                throw new LockedAccountException();
+            }
+
+            UsernamePasswordToken token = new UsernamePasswordToken(username, password,rememberMe);
+            SecurityUtils.getSubject().login(token);
+
+            resultMap.put("status", 200);
+            resultMap.put("message", "登录成功");
+            opsForValue.set(SHIRO_LOGIN_COUNT+username, "0");
+            opsForValue.set(SHIRO_IS_LOCK+username, "UNLOCK");
+            map.put("user",username);
+            //存储当前登录用户信息
+            SecurityUtils.getSubject().getSession().setAttribute("userinfo",sysUserService.findUserByName(username));
+        }catch (LockedAccountException e) {
+            resultMap.put("status", 400);
+            resultMap.put("message", "您已经被锁定1小时！");
+        }catch (UnknownAccountException e) {
+            resultMap.put("status", 300);
+            resultMap.put("message", opsForValue.get(SHIRO_LOGIN_LEFTCOUNT+username));
+        }catch(IncorrectCredentialsException e1){
+            resultMap.put("status", 100);
+            resultMap.put("message", opsForValue.get(SHIRO_LOGIN_LEFTCOUNT+username));
+        }catch (Exception e) {
+            resultMap.put("status", 600);
+            resultMap.put("message", opsForValue.get(SHIRO_LOGIN_LEFTCOUNT+username));
+        }
+        return resultMap;
+    }
+
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
+    public String toError(){
+
+        return "error";
+    }
+
+}

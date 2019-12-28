@@ -1,0 +1,36 @@
+package com.ivan.blog.Exception;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.UnauthorizedException;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
+
+/*
+ *  @Author: Ivan
+ *  @Description:
+ *  @Date: 2019/11/1 14:24
+ */
+@Slf4j
+public class MyExceptionResolver implements HandlerExceptionResolver{
+
+    public ModelAndView resolveException(HttpServletRequest request,
+                                         HttpServletResponse response, Object handler, Exception ex) {
+        // TODO Auto-generated method stub
+        log.info("【异常开始: 没有操作权限】");
+        //如果是shiro无权操作，因为shiro 在操作auno等一部分不进行转发至无权限url
+        if(ex instanceof UnauthorizedException){
+            ModelAndView mv = new ModelAndView("error");
+            return mv;
+        }
+        ex.printStackTrace();
+        ModelAndView mv = new ModelAndView("error");
+        mv.addObject("exception", ex.toString().replaceAll("\n", "<br/>"));
+        return mv;
+    }
+
+
+
+}
