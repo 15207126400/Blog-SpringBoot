@@ -35,7 +35,7 @@ public class ViewController {
      */
     @MyLog(value = "查询浏览量列表操作")
     @RequestMapping("/viewList")
-    @RequiresPermissions("views:list")
+    @RequiresPermissions("view:list")
     public String commentList(Model model){
         LambdaQueryWrapper<SysView> lambdaQueryWrapper = Wrappers.<SysView>lambdaQuery()
                 .orderByDesc(SysView::getId);
