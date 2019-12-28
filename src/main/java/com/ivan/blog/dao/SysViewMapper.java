@@ -1,17 +1,8 @@
 package com.ivan.blog.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ivan.blog.model.SysView;
 
-public interface SysViewMapper {
-    int deleteByPrimaryKey(Integer id);
+public interface SysViewMapper extends BaseMapper<SysView> {
 
-    int insert(SysView record);
-
-    int insertSelective(SysView record);
-
-    SysView selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(SysView record);
-
-    int updateByPrimaryKey(SysView record);
 }

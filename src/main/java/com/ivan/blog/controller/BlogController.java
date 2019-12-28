@@ -4,18 +4,21 @@ import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.BlogArticle;
 import com.ivan.blog.model.BlogCategory;
 import com.ivan.blog.model.BlogComment;
+import com.ivan.blog.model.SysView;
 import com.ivan.blog.model.dto.BlogArticleDTO;
 import com.ivan.blog.model.dto.BlogCommentDTO;
-import com.ivan.blog.service.BlogArticleService;
-import com.ivan.blog.service.BlogCategoryService;
-import com.ivan.blog.service.BlogCommentService;
-import com.ivan.blog.service.StatisticsService;
+import com.ivan.blog.service.*;
+import com.ivan.blog.utils.IpUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +39,25 @@ public class BlogController {
     private final BlogCategoryService blogCategoryService;
     private final BlogCommentService blogCommentService;
     private final StatisticsService statisticsService;
+    private final SysViewService sysViewService;
+
+    /**
+     * 访问博客首页
+     * @return
+     */
+    @MyLog("访问博客首页")
+    @RequestMapping("/blogIndex")
+    @ResponseBody
+    public List<BlogArticle> blogIndex(){
+        List<BlogArticle> result = blogArticleService.selectListByRand();
+        //浏览量记录
+        SysView sysView = new SysView();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        sysView.setIp(IpUtil.getRemoteIp(request));
+        sysViewService.save(sysView);
+
+        return result;
+    }
 
     /**
      * 获取文章列表 ---- 轮播图
@@ -78,7 +100,6 @@ public class BlogController {
      * @param id
      * @return
      */
-    @MyLog("访问博客首页")
     @RequestMapping("/getArticle")
     @ResponseBody
     public BlogArticleDTO getArticle(Integer id){
