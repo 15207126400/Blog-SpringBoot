@@ -11,6 +11,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
@@ -39,6 +40,34 @@ public class CommentController {
         model.addAttribute("comments",blogCommentService.selectList());
 
         return "comment/commentList";
+    }
+
+    /**
+     * 回复 页面跳转
+     * @return
+     */
+    @RequestMapping("/commentReply/{id}")
+    @RequiresPermissions("comment:reply")
+    public String commentReply(Model model ,@PathVariable("id") Integer id){
+
+        model.addAttribute("comment",blogCommentService.selectById(id));
+
+        return "comment/commentReply";
+    }
+
+    /**
+     * 回复
+     * @return
+     */
+    @RequestMapping("/reply")
+    @ResponseBody
+    public Map<String,Object> reply(BlogComment blogComment){
+        Map<String,Object> map = new HashMap<>();
+        if(blogCommentService.save(blogComment)){
+            map.put("status",200);
+        }
+
+        return map;
     }
 
     /**

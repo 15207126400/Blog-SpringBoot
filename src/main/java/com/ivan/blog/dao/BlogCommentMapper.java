@@ -8,6 +8,8 @@ public interface BlogCommentMapper extends BaseMapper<BlogComment> {
 
     List<BlogComment> selectList();
 
+    BlogComment selectById(Integer id);
+
     /**
      * 根据文章id查询评论列表
      * @param articleId

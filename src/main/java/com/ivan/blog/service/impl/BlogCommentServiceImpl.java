@@ -30,6 +30,11 @@ public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogC
         return blogCommentMapper.selectList();
     }
 
+    @Override
+    public BlogComment selectById(Integer id) {
+        return blogCommentMapper.selectById(id);
+    }
+
     /**
      * 发表评论
      * @return

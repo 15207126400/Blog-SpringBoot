@@ -27,12 +27,17 @@
     order by id desc
   </select>
 
+  <!--根据id查询评论-->
+  <select id="selectById" resultType="com.ivan.blog.model.BlogComment">
+    select <include refid="Base_Column_List" /> from blog_comment
+    where id = #{id}
+  </select>
+
   <!--根据文章id查询评论列表-->
   <select id="selectByArticel" resultType="com.ivan.blog.model.BlogComment">
     select <include refid="Join_Column_List"/> from blog_comment bc
     left join blog_article ba on ba.id = bc.article_id
     where ba.id = #{articleId}
-    order by bc.id desc
   </select>
 
   <select id="selectByParent" resultType="com.ivan.blog.model.BlogComment">

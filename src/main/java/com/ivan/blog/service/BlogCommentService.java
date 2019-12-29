@@ -16,6 +16,8 @@ public interface BlogCommentService extends IService<BlogComment> {
 
     List<BlogComment> selectList();
 
+    BlogComment selectById(Integer id);
+
     Map<String,Object> postComment(BlogCommentDTO blogCommentDTO);
 
     List<BlogComment> selectByArticel(Integer articleId);

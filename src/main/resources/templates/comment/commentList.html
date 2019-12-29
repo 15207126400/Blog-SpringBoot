@@ -39,6 +39,7 @@
                                             <td th:text="${comment.content}"></td>
                                             <td th:text="${#dates.format(comment.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                             <td>
+                                                <a th:href="@{/comment/commentReply/{id}(id=${comment.id})}">回复</a>
                                                 <a href="javascript:void(0);" th:onclick="'javascript:delData('+${comment.id}+')'">删除</a>
                                             </td>
                                         </tr>
@@ -53,6 +54,7 @@
     </div>
 </div>
 <script th:inline="javascript">
+
     //删除
     function delData(id){
         if(confirm("确定要删除吗?")){
