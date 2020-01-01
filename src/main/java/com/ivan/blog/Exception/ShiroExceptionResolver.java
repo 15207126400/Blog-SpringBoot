@@ -10,14 +10,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 /*
  *  @Author: Ivan
- *  @Description:
+ *  @Description:   shiro权限异常
+ *                  统一转发到没有权限提示页面
  *  @Date: 2019/11/1 14:24
  */
 @Slf4j
-public class MyExceptionResolver implements HandlerExceptionResolver{
+public class ShiroExceptionResolver implements HandlerExceptionResolver{
 
-    public ModelAndView resolveException(HttpServletRequest request,
-                                         HttpServletResponse response, Object handler, Exception ex) {
+    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         // TODO Auto-generated method stub
         log.info("【异常开始: 没有操作权限】");
         //如果是shiro无权操作，因为shiro 在操作auno等一部分不进行转发至无权限url

@@ -41,20 +41,15 @@ public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogC
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String,Object> postComment(BlogCommentDTO blogCommentDTO){
+    public void postComment(BlogCommentDTO blogCommentDTO){
         Map<String,Object> map = new HashMap<>();
 
         BlogComment blogComment = new BlogComment();
         BeanUtils.copyProperties(blogCommentDTO,blogComment);
 
         //保存评论
-        int num = blogCommentMapper.insert(blogComment);
+        blogCommentMapper.insert(blogComment);
 
-        if(num > 0){
-            map.put("code",200);
-            map.put("msg","发表成功");
-        }
-        return map;
     }
 
     /**

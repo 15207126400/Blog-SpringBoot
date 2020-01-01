@@ -1,24 +1,22 @@
 package com.ivan.blog.controller;
 
+import com.ivan.blog.Exception.TemplateException;
+import com.ivan.blog.Exception.Enum.CommonEnum;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.BlogArticle;
 import com.ivan.blog.model.BlogCategory;
 import com.ivan.blog.model.BlogComment;
-import com.ivan.blog.model.SysView;
 import com.ivan.blog.model.dto.BlogArticleDTO;
 import com.ivan.blog.model.dto.BlogCommentDTO;
 import com.ivan.blog.service.*;
-import com.ivan.blog.utils.IpAndAddrUtil;
+import com.ivan.blog.utils.R;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /*
@@ -36,7 +34,6 @@ public class BlogController {
     private final BlogCategoryService blogCategoryService;
     private final BlogCommentService blogCommentService;
     private final StatisticsService statisticsService;
-    private final SysViewService sysViewService;
 
     /**
      * 访问博客首页
@@ -45,10 +42,13 @@ public class BlogController {
     @MyLog("访问博客首页")
     @RequestMapping("/blogIndex")
     @ResponseBody
-    public List<BlogArticle> blogIndex(){
+    public R blogIndex(){
         List<BlogArticle> result = blogArticleService.selectListByRand();
+        if(CollectionUtils.isEmpty(result)){
+            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+        }
 
-        return result;
+        return R.ok(result);
     }
 
     /**
@@ -57,8 +57,11 @@ public class BlogController {
      */
     @RequestMapping("/getArticleList")
     @ResponseBody
-    public List<BlogArticleDTO> getArticleList(){
+    public R getArticleList(){
         List<BlogArticleDTO> result = blogArticleService.getArticleList();
+        if(CollectionUtils.isEmpty(result)){
+            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+        }
         //查询文章分类
         for(BlogArticleDTO item : result){
             List<BlogCategory> categorys = blogCategoryService.selectCategoryByArticel(item.getId());
@@ -66,7 +69,7 @@ public class BlogController {
         }
 
 
-        return result;
+        return R.ok(result);
     }
 
     /**
@@ -75,8 +78,11 @@ public class BlogController {
      */
     @RequestMapping("/getArticleListByCategory")
     @ResponseBody
-    public List<BlogArticleDTO> getArticleListByCategory(Integer categoryId){
+    public R getArticleListByCategory(Integer categoryId){
         List<BlogArticleDTO> result = blogArticleService.selectListByCategory(categoryId);
+        if(CollectionUtils.isEmpty(result)){
+            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+        }
 
         //查询文章分类
         for(BlogArticleDTO item : result){
@@ -84,7 +90,7 @@ public class BlogController {
             item.setCategory(extCategory(categorys).toString());
         }
 
-        return result;
+        return R.ok(result);
     }
 
     /**
@@ -95,17 +101,17 @@ public class BlogController {
     @MyLog("访问博文内容")
     @RequestMapping("/getArticle")
     @ResponseBody
-    public BlogArticleDTO getArticle(Integer id){
+    public R getArticle(Integer id){
         BlogArticleDTO result = blogArticleService.selectById(id);
         List<BlogCategory> categorys = blogCategoryService.selectCategoryByArticel(id);
 
         result.setCategory(extCategory(categorys).toString());
 
-        return result;
+        return R.ok(result);
     }
 
     /**
-     * 提取文章类型名称
+     * 提取文章标签名称
      * @return
      */
     private List<String> extCategory(List<BlogCategory> categorys){
@@ -123,10 +129,13 @@ public class BlogController {
      */
     @RequestMapping("/getCategoryList")
     @ResponseBody
-    public List<BlogCategory> getCategoryList(){
+    public R getCategoryList(){
         List<BlogCategory> result = blogCategoryService.list();
+        if(CollectionUtils.isEmpty(result)){
+            throw new TemplateException(CommonEnum.CATEGORY_NULL);
+        }
 
-        return result;
+        return R.ok(result);
     }
 
     /**
@@ -135,10 +144,13 @@ public class BlogController {
      */
     @RequestMapping("/getListByRand")
     @ResponseBody
-    public List<BlogArticle> getListByRand(){
+    public R getListByRand(){
         List<BlogArticle> result = blogArticleService.selectListByRand();
+        if(CollectionUtils.isEmpty(result)){
+            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+        }
 
-        return result;
+        return R.ok(result);
     }
 
     /**
@@ -148,10 +160,10 @@ public class BlogController {
     @MyLog("发表评论")
     @RequestMapping("/postComment")
     @ResponseBody
-    public Map<String,Object> postComment(BlogCommentDTO blogCommentDTO){
-        Map<String,Object> result = blogCommentService.postComment(blogCommentDTO);
+    public R postComment(BlogCommentDTO blogCommentDTO){
+        blogCommentService.postComment(blogCommentDTO);
 
-        return result;
+        return R.ok();
     }
 
     /**
@@ -160,11 +172,11 @@ public class BlogController {
      */
     @RequestMapping("/getCommentList")
     @ResponseBody
-    public List<BlogComment> getCommentList(Integer articleId){
+    public R getCommentList(Integer articleId){
         //查询当前文章下的所有评论
-        List<BlogComment> blogComments = blogCommentService.selectByArticel(articleId);
+        List<BlogComment> result = blogCommentService.selectByArticel(articleId);
 
-        return blogComments;
+        return R.ok(result);
     }
 
     /**
@@ -174,9 +186,10 @@ public class BlogController {
     @MyLog("访问博主信息")
     @RequestMapping("/getStatistical")
     @ResponseBody
-    public Map<String,Integer> getStatistical(){
+    public R getStatistical(){
+        Map<String, Integer> result = statisticsService.blogOv();
 
-        return statisticsService.blogOv();
+        return R.ok(result);
     }
 
 }

@@ -30,7 +30,6 @@ public class BlogArticleServiceImpl extends ServiceImpl<BlogArticleMapper, BlogA
 
     private final BlogArticleMapper blogArticleMapper;
     private final BlogArticleContentMapper blogArticleContentMapper;
-    private final BlogArticlePictureMapper blogArticlePictureMapper;
     private final BlogArticleCategoryMapper blogArticleCategoryMapper;
     private final RedisTemplate redisTemplate;
 

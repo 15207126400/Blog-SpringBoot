@@ -3,7 +3,7 @@ package com.ivan.blog.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.ivan.blog.Exception.MyExceptionResolver;
+import com.ivan.blog.Exception.ShiroExceptionResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -62,7 +62,7 @@ public class ShiroConfig {
     //异常统一处理
     @Bean
     public HandlerExceptionResolver solver(){
-        HandlerExceptionResolver handlerExceptionResolver=new MyExceptionResolver();
+        HandlerExceptionResolver handlerExceptionResolver=new ShiroExceptionResolver();
         return handlerExceptionResolver;
     }
 
