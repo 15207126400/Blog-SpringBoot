@@ -20,6 +20,7 @@ public enum  CommonEnum{
     INTERNAL_SERVER_ERROR(500, "服务器内部错误!"),
     SERVER_BUSY(503,"服务器正忙，请稍后再试!"),
     REQUEST_TOO_FREQUENT(504,"请求过于频繁,请稍后再试!"),
+    REQUEST_LOCK(505,"你存在恶意攻击行为,IP将被锁定!"),
 
 
     /* 博客前端 001~100 */

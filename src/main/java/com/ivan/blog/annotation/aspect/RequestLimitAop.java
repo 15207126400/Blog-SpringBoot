@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
@@ -37,11 +36,11 @@ public class RequestLimitAop {
     private final StringRedisTemplate stringRedisTemplate;
 
     @Before("within(@org.springframework.stereotype.Controller *) && @annotation(limit)")
-    public void requestLimit(JoinPoint joinPoint, RequestLimit limit) throws Exception {
+    public void requestLimit(JoinPoint joinPoint, RequestLimit limit){
         Object[] args = joinPoint.getArgs();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-        String ip = request.getRemoteAddr();
+        String ip = getIpAddress(request);
         log.info("访问的ip地址为：{}", ip);
         String url = request.getRequestURL().toString();
         String key = "req_limit_".concat(url).concat("_").concat(ip);
@@ -56,7 +55,7 @@ public class RequestLimitAop {
             try {
                 writer = response.getWriter();
                 jsonGenerator = (new ObjectMapper()).getFactory().createGenerator(writer);
-                jsonGenerator.writeObject("请求过于频繁,超出限制!");
+                jsonGenerator.writeObject(CommonEnum.REQUEST_LOCK.getResultMsg());
             } catch (IOException e1) {
                 e1.printStackTrace();
             } finally {
@@ -91,4 +90,42 @@ public class RequestLimitAop {
             return true;
         }
     }
+
+    /**
+     * 获取用户真实IP地址，不使用request.getRemoteAddr()的原因是有可能用户使用了代理软件方式避免真实IP地址,
+     * 可是，如果通过了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP值
+     *
+     * @return ip
+     */
+    private String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+            // 多次反向代理后会有多个ip值，第一个ip才是真实ip
+            if( ip.indexOf(",")!=-1 ){
+                ip = ip.split(",")[0];
+            }
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+
+        log.info("获取客户端ip: " + ip);
+        return ip;
+    }
+
 }
