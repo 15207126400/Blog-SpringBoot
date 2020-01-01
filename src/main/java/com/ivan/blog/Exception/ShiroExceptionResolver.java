@@ -18,16 +18,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class ShiroExceptionResolver implements HandlerExceptionResolver{
 
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        // TODO Auto-generated method stub
-        log.info("【异常开始: 没有操作权限】");
+        ModelAndView mv = new ModelAndView();
         //如果是shiro无权操作，因为shiro 在操作auno等一部分不进行转发至无权限url
         if(ex instanceof UnauthorizedException){
-            ModelAndView mv = new ModelAndView("error");
-            return mv;
+            mv.setViewName("error");
+            mv.addObject("exception", ex.toString().replaceAll("\n", "<br/>"));
         }
-        ex.printStackTrace();
-        ModelAndView mv = new ModelAndView("error");
-        mv.addObject("exception", ex.toString().replaceAll("\n", "<br/>"));
+
         return mv;
     }
 

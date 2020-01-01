@@ -19,6 +19,7 @@ public enum  CommonEnum{
     NOT_FOUND(404, "未找到该资源!"),
     INTERNAL_SERVER_ERROR(500, "服务器内部错误!"),
     SERVER_BUSY(503,"服务器正忙，请稍后再试!"),
+    REQUEST_TOO_FREQUENT(504,"请求过于频繁,请稍后再试!"),
 
 
     /* 博客前端 001~100 */

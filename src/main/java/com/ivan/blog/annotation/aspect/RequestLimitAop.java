@@ -2,6 +2,8 @@ package com.ivan.blog.annotation.aspect;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ivan.blog.Exception.Enum.CommonEnum;
+import com.ivan.blog.Exception.TemplateException;
 import com.ivan.blog.annotation.RequestLimit;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -17,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 
 /*
  *  @Author: Ivan
@@ -29,7 +34,7 @@ import java.io.PrintWriter;
 @Slf4j
 public class RequestLimitAop {
 
-    private final RedisTemplate redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Before("within(@org.springframework.stereotype.Controller *) && @annotation(limit)")
     public void requestLimit(JoinPoint joinPoint, RequestLimit limit) throws Exception {
@@ -58,16 +63,20 @@ public class RequestLimitAop {
                 writer.flush();
                 writer.close();
             }
-            throw new Exception("请求过于频繁,超出限制!");
+            throw new TemplateException(CommonEnum.REQUEST_TOO_FREQUENT);
         }
     }
 
     private boolean checkByRedis(RequestLimit limit, String key) {
-        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
+        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, stringRedisTemplate.getConnectionFactory());
         Long increment = entityIdCounter.getAndIncrement();
-        //return increment;
-        Long incrByCount = redisTemplate.opsForValue().increment(key, increment);
-        //Integer incrByCount = redisTemplate.incrBy(key, limit);
+        ValueOperations redis = stringRedisTemplate.opsForValue();
+        //设置有效时间和累计次数
+        redis.set(key, "1", 5*60, TimeUnit.SECONDS);
+        Long incrByCount = redis.increment(key, increment);
+        //验证有效时间
+        Long expire = stringRedisTemplate.boundHashOps(key).getExpire();
+        log.info("剩余有效时间: " + expire);
         if (incrByCount > limit.count()) {
             /**
              * 该次请求已经超过了规定时间范围内请求的最大次数
