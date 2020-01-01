@@ -3,6 +3,7 @@ package com.ivan.blog.controller;
 import com.ivan.blog.Exception.TemplateException;
 import com.ivan.blog.Exception.Enum.CommonEnum;
 import com.ivan.blog.annotation.MyLog;
+import com.ivan.blog.annotation.RequestLimit;
 import com.ivan.blog.model.BlogArticle;
 import com.ivan.blog.model.BlogCategory;
 import com.ivan.blog.model.BlogComment;
@@ -158,6 +159,7 @@ public class BlogController {
      * @return
      */
     @MyLog("发表评论")
+    @RequestLimit(count = 10)
     @RequestMapping("/postComment")
     @ResponseBody
     public R postComment(BlogCommentDTO blogCommentDTO){
