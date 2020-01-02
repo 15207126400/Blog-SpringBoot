@@ -1,6 +1,5 @@
 package com.ivan.blog.controller;
 
-import com.ivan.blog.Exception.TemplateException;
 import com.ivan.blog.Exception.Enum.CommonEnum;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.annotation.RequestLimit;
@@ -46,7 +45,7 @@ public class BlogController {
     public R blogIndex(){
         List<BlogArticle> result = blogArticleService.selectListByRand();
         if(CollectionUtils.isEmpty(result)){
-            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+            return R.failed(CommonEnum.ARTICLE_NULL.getResultMsg());
         }
 
         return R.ok(result);
@@ -61,7 +60,7 @@ public class BlogController {
     public R getArticleList(){
         List<BlogArticleDTO> result = blogArticleService.getArticleList();
         if(CollectionUtils.isEmpty(result)){
-            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+            return R.failed(CommonEnum.ARTICLE_NULL.getResultMsg());
         }
         //查询文章分类
         for(BlogArticleDTO item : result){
@@ -82,7 +81,7 @@ public class BlogController {
     public R getArticleListByCategory(Integer categoryId){
         List<BlogArticleDTO> result = blogArticleService.selectListByCategory(categoryId);
         if(CollectionUtils.isEmpty(result)){
-            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+            return R.failed(CommonEnum.ARTICLE_NULL.getResultMsg());
         }
 
         //查询文章分类
@@ -133,7 +132,7 @@ public class BlogController {
     public R getCategoryList(){
         List<BlogCategory> result = blogCategoryService.list();
         if(CollectionUtils.isEmpty(result)){
-            throw new TemplateException(CommonEnum.CATEGORY_NULL);
+            return R.failed(CommonEnum.CATEGORY_NULL.getResultMsg());
         }
 
         return R.ok(result);
@@ -148,7 +147,7 @@ public class BlogController {
     public R getListByRand(){
         List<BlogArticle> result = blogArticleService.selectListByRand();
         if(CollectionUtils.isEmpty(result)){
-            throw new TemplateException(CommonEnum.ARTICLE_NULL);
+            return R.failed(CommonEnum.ARTICLE_NULL.getResultMsg());
         }
 
         return R.ok(result);
@@ -163,6 +162,9 @@ public class BlogController {
     @RequestMapping("/postComment")
     @ResponseBody
     public R postComment(BlogCommentDTO blogCommentDTO){
+        if((blogCommentDTO.getName()).indexOf("博主") != -1){
+            return R.failed(CommonEnum.COMMENT_NAME_IL.getResultMsg());
+        }
         blogCommentService.postComment(blogCommentDTO);
 
         return R.ok();

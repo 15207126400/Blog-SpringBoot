@@ -14,6 +14,7 @@ public enum  CommonEnum{
 
     // 数据操作错误定义
     SUCCESS(200, "成功!"),
+    ERROR(-1, "失败!"),
     BODY_NOT_MATCH(400,"请求的数据格式不符!"),
     SIGNATURE_NOT_MATCH(401,"请求的数字签名不匹配!"),
     NOT_FOUND(404, "未找到该资源!"),
@@ -24,7 +25,9 @@ public enum  CommonEnum{
 
     /* 博客前端 001~100 */
     ARTICLE_NULL(001,"没有查询到文章数据!"),
-    CATEGORY_NULL(002,"没有查询到标签数据!");
+    CATEGORY_NULL(002,"没有查询到标签数据!"),
+
+    COMMENT_NAME_IL(011,"博主会告你侵权哦!");
 
 
     /** 错误码 */

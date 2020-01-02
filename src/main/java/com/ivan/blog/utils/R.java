@@ -1,7 +1,6 @@
 package com.ivan.blog.utils;
 
 import com.ivan.blog.Exception.Enum.CommonEnum;
-import com.ivan.blog.Exception.Enum.ResponseCodeEnum;
 import lombok.*;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
@@ -55,31 +54,31 @@ public class R<T> implements Serializable {
 
 
     public static <T> R<T> ok() {
-        return restResult(null, ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getDesc());
+        return restResult(null, CommonEnum.SUCCESS.getResultCode(), CommonEnum.SUCCESS.getResultMsg());
     }
 
     public static <T> R<T> ok(T data) {
-        return restResult(data, ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getDesc());
+        return restResult(data, CommonEnum.SUCCESS.getResultCode(), CommonEnum.SUCCESS.getResultMsg());
     }
 
     public static <T> R<T> ok(T data, String msg) {
-        return restResult(data, ResponseCodeEnum.SUCCESS.getCode(), msg);
+        return restResult(data, CommonEnum.SUCCESS.getResultCode(), msg);
     }
 
     public static <T> R<T> failed() {
-        return restResult(null, ResponseCodeEnum.ERROR.getCode(), ResponseCodeEnum.ERROR.getDesc());
+        return restResult(null, CommonEnum.ERROR.getResultCode(), CommonEnum.ERROR.getResultMsg());
     }
 
     public static <T> R<T> failed(String msg) {
-        return restResult(null, ResponseCodeEnum.ERROR.getCode(), msg);
+        return restResult(null, CommonEnum.ERROR.getResultCode(), msg);
     }
 
     public static <T> R<T> failed(T data) {
-        return restResult(data, ResponseCodeEnum.ERROR.getCode(), ResponseCodeEnum.ERROR.getDesc());
+        return restResult(data, CommonEnum.ERROR.getResultCode(), CommonEnum.ERROR.getResultMsg());
     }
 
     public static <T> R<T> failed(T data, String msg) {
-        return restResult(data, ResponseCodeEnum.ERROR.getCode(), msg);
+        return restResult(data, CommonEnum.ERROR.getResultCode(), msg);
     }
 
     public static <T> R<T> failed(CommonEnum commonEnum) {
