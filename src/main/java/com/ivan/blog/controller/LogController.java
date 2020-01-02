@@ -37,7 +37,6 @@ public class LogController {
      * 列表查询.
      * @return
      */
-    @MyLog(value = "查询日志列表操作")
     @RequestMapping("/logList")
     @RequiresPermissions("log:list")
     public String logList(Model model){
@@ -52,7 +51,6 @@ public class LogController {
      * 删除;
      * @return
      */
-    @MyLog(value = "删除日志信息操作")
     @RequestMapping("/logDel")
     @ResponseBody
     @RequiresPermissions("log:del")

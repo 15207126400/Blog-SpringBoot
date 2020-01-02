@@ -32,7 +32,6 @@ public class PermissionController {
      * 权限列表查询.
      * @return
      */
-    @MyLog(value = "查询权限列表操作")
     @RequestMapping("/permissionList")
     @RequiresPermissions("permission:list")
     public String permissionList(Model model){
@@ -65,7 +64,6 @@ public class PermissionController {
         return "permission/permissionPut";
     }
 
-    @MyLog(value = "新增或修改权限信息操作")
     @RequestMapping("insertOrUpdate")
     @ResponseBody
     public Map<String,Object> insertOrUpdate(SysPermission sysPermission, String op){
@@ -87,7 +85,6 @@ public class PermissionController {
      * 用户删除;
      * @return
      */
-    @MyLog(value = "删除权限信息操作")
     @RequestMapping("/permissionDel")
     @ResponseBody
     @RequiresPermissions("permission:del")

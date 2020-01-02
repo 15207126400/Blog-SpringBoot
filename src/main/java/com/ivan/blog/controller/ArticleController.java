@@ -5,6 +5,7 @@ import com.ivan.blog.dao.BlogArticlePictureMapper;
 import com.ivan.blog.model.BlogArticle;
 import com.ivan.blog.model.BlogArticlePicture;
 import com.ivan.blog.model.BlogCategory;
+import com.ivan.blog.model.SysDict;
 import com.ivan.blog.model.dto.BlogArticleDTO;
 import com.ivan.blog.service.BlogArticleService;
 import com.ivan.blog.service.BlogCategoryService;
@@ -40,7 +41,6 @@ public class ArticleController {
      * 文章信息列表查询.
      * @return
      */
-    @MyLog(value = "查询文章信息列表操作")
     @RequestMapping("/articleList")
     @RequiresPermissions("article:list")
     public String articleList(Model model){
@@ -77,11 +77,12 @@ public class ArticleController {
             cates.add(item.getId());
         }
         model.addAttribute("cates",cates);
+        List<SysDict> dicts = sysDictService.findListByType(1001);
+        model.addAttribute("dicts",dicts);
 
         return "article/articlePut";
     }
 
-    @MyLog(value = "新增或修改文章信息操作")
     @PostMapping(value="insertOrUpdate")
     @ResponseBody
     public Map<String,Object> insertOrUpdate(BlogArticleDTO blogArticleDto, String op, @RequestParam(value = "file") MultipartFile file){
@@ -109,7 +110,6 @@ public class ArticleController {
      * 文章信息删除;
      * @return
      */
-    @MyLog(value = "删除文章信息操作")
     @RequestMapping("/articleDel")
     @ResponseBody
     @RequiresPermissions("article:del")
@@ -127,7 +127,6 @@ public class ArticleController {
      * 富文本文件上传
      * @return
      */
-    @MyLog(value = "富文本文件上传")
     @RequestMapping("/upload")
     @ResponseBody
     public Map<String, Object> upload(@RequestParam(value = "upload_file") MultipartFile upload_file, Integer articleId){

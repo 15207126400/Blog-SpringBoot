@@ -58,6 +58,12 @@
                                                 <input class="form-control" name="traffic" type="text" placeholder="请输入文章访问量" th:value="${article.traffic}">
                                             </div>
                                             <div class="form-group">
+                                                <label>是否置顶</label>
+                                                <select name="isTop" class="form-control">
+                                                    <option th:each="dict:${dicts}" th:selected="${dict.dictCode} eq ${article.isTop}" th:value="${dict.dictCode}" th:text="${dict.dictValue}">${dict.dictValue}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
                                                 <label>文章类型</label>
                                                 <div style="width:600px;" class="form-group">
                                                     <label th:each="category:${categorys}" class="checkbox">

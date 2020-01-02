@@ -32,7 +32,6 @@ public class CategoryController {
      * 分类列表查询.
      * @return
      */
-    @MyLog(value = "查询分类列表操作")
     @RequestMapping("/categoryList")
     @RequiresPermissions("category:list")
     public String categoryList(Model model){
@@ -65,7 +64,6 @@ public class CategoryController {
         return "category/categoryPut";
     }
 
-    @MyLog(value = "新增或修改分类信息操作")
     @RequestMapping("insertOrUpdate")
     @ResponseBody
     public Map<String,Object> insertOrUpdate(BlogCategory blogCategory, String op){
@@ -88,7 +86,6 @@ public class CategoryController {
      * 分类删除;
      * @return
      */
-    @MyLog(value = "删除分类信息操作")
     @RequestMapping("/categoryDel")
     @ResponseBody
     @RequiresPermissions("category:del")

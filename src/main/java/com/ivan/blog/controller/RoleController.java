@@ -41,7 +41,6 @@ public class RoleController {
      * 角色查询.
      * @return
      */
-    @MyLog(value = "查询角色列表操作")
     @RequestMapping("/roleList")
     @RequiresPermissions("role:list")
     public String roleInfo(Model model){
@@ -75,7 +74,6 @@ public class RoleController {
         return "role/rolePut";
     }
 
-    @MyLog(value = "新增或修改角色信息操作")
     @RequestMapping("insertOrUpdate")
     @ResponseBody
     public Map<String,Object> insertOrUpdate(SysRole sysRole, String op){
@@ -96,7 +94,6 @@ public class RoleController {
      * 角色删除;
      * @return
      */
-    @MyLog(value = "删除角色信息操作")
     @RequestMapping("/roleDel")
     @ResponseBody
     @RequiresPermissions("role:del")

@@ -33,7 +33,6 @@ public class CommentController {
      * 评论列表查询.
      * @return
      */
-    @MyLog(value = "查询评论列表操作")
     @RequestMapping("/commentList")
     @RequiresPermissions("comment:list")
     public String commentList(Model model){
@@ -74,7 +73,6 @@ public class CommentController {
      * 评论删除;
      * @return
      */
-    @MyLog(value = "删除评论信息操作")
     @RequestMapping("/commentDel")
     @ResponseBody
     @RequiresPermissions("comment:del")

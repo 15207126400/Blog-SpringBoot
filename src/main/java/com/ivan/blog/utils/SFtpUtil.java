@@ -23,7 +23,7 @@ public class SFtpUtil {
 	 使用端口号、用户名、密码以连接SFTP服务器
 	 */
     public SFtpUtil() {
-    	 this.connectServer("39.106.89.216", 22, "root", "Qinoupp918");
+    	 this.connectServer("39.106.89.216", 22, "root", "Qinoupp815");
     }
     
     public SFtpUtil(String ftpHost, int ftpPort, String ftpUserName, String ftpPassword) {

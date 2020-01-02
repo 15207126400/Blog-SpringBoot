@@ -29,7 +29,6 @@ public class DictController {
      * 数据字典列表查询.
      * @return
      */
-    @MyLog(value = "查询数据字典列表操作")
     @RequestMapping("/dictList")
     @RequiresPermissions("dict:list")
     public String dictList(Model model){
@@ -65,7 +64,6 @@ public class DictController {
         return "dict/dictPut";
     }
 
-    @MyLog(value = "新增或修改数据字典操作")
     @RequestMapping("insertOrUpdate")
     @ResponseBody
     public Map<String,Object> insertOrUpdate(SysDict sysDict,String op){
@@ -89,7 +87,6 @@ public class DictController {
      * 数据字典删除;
      * @return
      */
-    @MyLog(value = "删除数据字典操作")
     @RequestMapping("/dictDel")
     @ResponseBody
     @RequiresPermissions("dict:del")

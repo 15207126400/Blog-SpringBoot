@@ -38,7 +38,6 @@ public class UserController {
      * 用户列表查询.
      * @return
      */
-    @MyLog(value = "查询用户列表操作")
     @RequestMapping("/userList")
     @RequiresPermissions("user:list")
     public String userList(Model model){
@@ -74,7 +73,6 @@ public class UserController {
         return "user/userPut";
     }
 
-    @MyLog(value = "新增或修改用户信息操作")
     @RequestMapping("insertOrUpdate")
     @ResponseBody
     public Map<String,Object> insertOrUpdate(SysUserDTO sysUser, String op){
@@ -103,7 +101,6 @@ public class UserController {
      * 用户删除;
      * @return
      */
-    @MyLog(value = "删除用户信息操作")
     @RequestMapping("/userDel")
     @ResponseBody
     @RequiresPermissions("user:del")
