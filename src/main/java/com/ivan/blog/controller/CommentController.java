@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.BlogComment;
 import com.ivan.blog.service.BlogCommentService;
-import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
