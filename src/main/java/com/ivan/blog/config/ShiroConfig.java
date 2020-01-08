@@ -22,7 +22,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /*
  *  @Author: Ivan
- *  @Description:
+ *  @Description:   shiro配置类
  *  @Date: 2019/10/31 23:04
  */
 @Configuration

@@ -28,9 +28,15 @@ spring:
   redis:
     database: 0
     host: 39.106.89.216
-    port: 6379
-    password: 123456
+    port: 6699
+    password: 135555
     timeout: 0
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

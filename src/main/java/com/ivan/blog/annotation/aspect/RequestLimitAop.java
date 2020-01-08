@@ -17,6 +17,8 @@ import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,13 +31,13 @@ import java.util.concurrent.TimeUnit;
  *  @Date: 2020/1/1 15:42
  */
 @Aspect
-@Component
-@AllArgsConstructor
+//@Component
 @Slf4j
 @SuppressWarnings("unchecked")
 public class RequestLimitAop {
 
-    private final StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Before("within(@org.springframework.stereotype.Controller *) && @annotation(limit)")
     public void requestLimit(JoinPoint joinPoint, RequestLimit limit){
@@ -74,7 +76,7 @@ public class RequestLimitAop {
         Long increment = entityIdCounter.getAndIncrement();
         ValueOperations redis = stringRedisTemplate.opsForValue();
         //设置有效时间和累计次数
-        redis.set(key, "1", 5*60, TimeUnit.SECONDS);
+        redis.set(key, "1", 2*60, TimeUnit.SECONDS);
         Long incrByCount = redis.increment(key, increment);
         //验证有效时间
         Long expire = stringRedisTemplate.boundHashOps(key).getExpire();

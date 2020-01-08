@@ -4,15 +4,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysUser;
 import com.ivan.blog.service.*;
 import com.ivan.blog.utils.CurrentUserUtil;
-import com.ivan.blog.utils.MD5Util;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -21,32 +16,33 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
 
 @Controller
 @Slf4j
 public class LoginController {
-    @Autowired
+
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
+    @Resource
     private SysUserService sysUserService;
-    @Autowired
+    @Resource
     private StatisticsService statisticsService;
 
     //用户登录次数计数  redisKey 前缀
-    private String SHIRO_LOGIN_COUNT = "shiro-login-count:";
+    private String SHIRO_LOGIN_COUNT = "shiro-login-count";
     //用户登录是否被锁定    一小时 redisKey 前缀
-    private String SHIRO_IS_LOCK = "shiro-is-lock:";
+    private String SHIRO_IS_LOCK = "shiro-is-lock";
     //用户登录剩余次数
-    private String SHIRO_LOGIN_LEFTCOUNT="shiro-login-left-count:";
+    private String SHIRO_LOGIN_LEFTCOUNT="shiro-login-left-count";
 
     @RequestMapping({"/","/index"})
     public String index(Model model){
@@ -91,7 +87,7 @@ public class LoginController {
         }
     }
 
-    @MyLog(value = "用户登录操作")
+    //@MyLog(value = "用户登录操作")
     @RequestMapping(value="/ajaxLogin",method=RequestMethod.POST)
     @ResponseBody
     public Map<String,Object> submitLogin(String username,String password,Boolean rememberMe) {
@@ -99,23 +95,22 @@ public class LoginController {
         Map<String, String> map = new HashMap<>();
 
         Session session = SecurityUtils.getSubject().getSession();
-        log.info("session: " + session);
-        ValueOperations<String,String> opsForValue = stringRedisTemplate.opsForValue();
-        log.info("SHIRO_LOGIN_COUNT: " + Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT + username)));
+        ValueOperations opsForValue = stringRedisTemplate.opsForValue();
+        String key = SHIRO_LOGIN_COUNT + username;
 
-        if(stringRedisTemplate.hasKey(SHIRO_LOGIN_COUNT + username)){
+        if(stringRedisTemplate.hasKey(key)){
             //计数大于5时，设置用户被锁定一小时
-            if(Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT + username)) >= 5){
+            if(Integer.parseInt(opsForValue.get(key).toString()) >= 5){
                 opsForValue.set(SHIRO_IS_LOCK + username, "LOCK");
                 stringRedisTemplate.expire(SHIRO_IS_LOCK + username, 1, TimeUnit.HOURS);
             }
         }
-        opsForValue.increment(SHIRO_LOGIN_COUNT + username, 1);
-        int leftcount = 5 - Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT + username));
+
+        opsForValue.increment(key, 1);
+        int leftcount = 5 - Integer.parseInt(opsForValue.get(key).toString());
         log.info("leftcount: " + leftcount);
         opsForValue.set(SHIRO_LOGIN_LEFTCOUNT + username, String.valueOf(leftcount));
-        Boolean ss = stringRedisTemplate.expire(SHIRO_LOGIN_LEFTCOUNT + username, 1, TimeUnit.HOURS);
-        log.info("ss: " + ss);
+        stringRedisTemplate.expire(SHIRO_LOGIN_LEFTCOUNT + username, 1, TimeUnit.HOURS);
 
         try {
             if ("LOCK".equals(opsForValue.get(SHIRO_IS_LOCK + username))){
@@ -129,7 +124,7 @@ public class LoginController {
 
             resultMap.put("status", 200);
             resultMap.put("message", "登录成功");
-            opsForValue.set(SHIRO_LOGIN_COUNT + username, "0");
+            opsForValue.set(key, "0");
             opsForValue.set(SHIRO_IS_LOCK + username, "UNLOCK");
             map.put("user",username);
             //存储当前登录用户信息
