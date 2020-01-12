@@ -83,19 +83,28 @@
                 </div>
             </div>
 
-
+            <!--网站访问量-->
             <div class="row">
                 <div class="col-md-9 col-sm-12 col-xs-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Bar Chart Example
+                        <div class="panel-heading app-row-between-layout">
+                            网站访问量
+                            <div class="app-row-start-left">
+                                访问总量:
+                                <h5 th:text="${totalCount}"></h5>
+                            </div>
                         </div>
                         <div class="panel-body">
-                            <div id="morris-bar-chart"></div>
+                            <div id="morris-line-chart"></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12 col-xs-12">
+            </div>
+
+
+            <!--博客概况-->
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h5>博客概况</h5>
@@ -105,11 +114,12 @@
                         </div>
                     </div>
                 </div>
-                <!--数据接收-->
-                <input id="articleCount" type="hidden" th:value="${blogOv.articleCount}" />
-                <input id="tagsCount" type="hidden" th:value="${blogOv.tagsCount}" />
-                <input id="commontCount" type="hidden" th:value="${blogOv.commontCount}" />
             </div>
+
+            <!--数据接收-->
+            <input id="articleCount" type="hidden" th:value="${blogOv.articleCount}" />
+            <input id="tagsCount" type="hidden" th:value="${blogOv.tagsCount}" />
+            <input id="commontCount" type="hidden" th:value="${blogOv.commontCount}" />
         </div>
     </div>
 </div>
@@ -119,11 +129,65 @@
         height: 50px;
     }
 </style>
-<script>
+<script th:inline="javascript">
+
+    var dateList = [[${dateList}]];
+
+    //访问量(线图)
+    Morris.Line({
+        element: 'morris-line-chart',
+        data: [
+            {y: dateList[0].date,a: dateList[0].count},
+            {y: dateList[1].date,a: dateList[1].count},
+            {y: dateList[2].date,a: dateList[2].count},
+            {y: dateList[3].date,a: dateList[3].count},
+            {y: dateList[4].date,a: dateList[4].count},
+            {y: dateList[5].date,a: dateList[5].count},
+            {y: dateList[6].date,a: dateList[6].count}
+        ],
+        barColors: ['#00a65a', '#f56954'],
+        hoverFillColor: '#00a65a',
+        gridTextSize: 10,
+        xkey: 'y',
+        ykeys: ['a'],
+        units: '次',
+        labels: ['访问量'],
+        xLabelAngle: 20
+        //smooth: false         //禁用线条平滑
+    });
+
+    //访问量(柱图)
+    Morris.Bar({
+        element: 'morris-bar-chart',
+        data: [
+            {y: dateList[0].date,a: dateList[0].count},
+            {y: dateList[1].date,a: dateList[1].count},
+            {y: dateList[2].date,a: dateList[2].count},
+            {y: dateList[3].date,a: dateList[3].count},
+            {y: dateList[4].date,a: dateList[4].count},
+            {y: dateList[5].date,a: dateList[5].count},
+            {y: dateList[6].date,a: dateList[6].count}
+        ],
+        lineWidth: ['10px'],
+        barColors: ['#508695', '#f56954'],
+        hoverFillColor: '#00a65a',
+        gridTextSize: 10,
+        smooth: false,
+        xkey: 'y',
+        ykeys: ['a'],
+        ymax: 'auto 100',
+        units: '次',
+        labels: ['访问量'],
+        hideHover: 'true',
+        resize: true
+    })
+
+    //数据统计
     var articleCount = $("#articleCount").val()
     var tagsCount = $("#tagsCount").val()
     var commontCount = $("#commontCount").val()
 
+    //博客概览
     Morris.Donut({
         element: 'morris-donut-chart',
         data: [{
@@ -136,7 +200,9 @@
             label: "评论",
             value: commontCount
         }],
-        resize: true
+        resize: true,
+        colors: ["#3c8dbc", "#f56954", "#00a65a"],
+        //hideHover: true
     });
 </script>
 </html>

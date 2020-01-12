@@ -2,11 +2,10 @@ package com.ivan.blog.annotation.aspect;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ivan.blog.Exception.BizException;
 import com.ivan.blog.Exception.Enum.CommonEnum;
-import com.ivan.blog.Exception.TemplateException;
 import com.ivan.blog.annotation.RequestLimit;
 import com.ivan.blog.utils.IpAndAddrUtil;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +13,6 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -67,7 +65,7 @@ public class RequestLimitAop {
                 writer.flush();
                 writer.close();
             }
-            throw new TemplateException(CommonEnum.REQUEST_TOO_FREQUENT);
+            throw new BizException(CommonEnum.REQUEST_TOO_FREQUENT);
         }
     }
 

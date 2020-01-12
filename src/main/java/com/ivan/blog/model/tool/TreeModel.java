@@ -6,7 +6,7 @@ import java.util.Map;
 
 /*
  *  @Author: Ivan
- *  @Description:
+ *  @Description:   树结构
  *  @Date: 2019/11/6 20:56
  */
 public class TreeModel {

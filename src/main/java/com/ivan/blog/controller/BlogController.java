@@ -9,6 +9,7 @@ import com.ivan.blog.model.BlogComment;
 import com.ivan.blog.model.dto.BlogArticleDTO;
 import com.ivan.blog.model.dto.BlogCommentDTO;
 import com.ivan.blog.service.*;
+import com.ivan.blog.service.impl.VisitServiceImpl;
 import com.ivan.blog.utils.R;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class BlogController {
     private final BlogCategoryService blogCategoryService;
     private final BlogCommentService blogCommentService;
     private final StatisticsService statisticsService;
+    private final VisitService visitService;
 
     /**
      * 访问博客首页
@@ -44,6 +46,8 @@ public class BlogController {
     @ResponseBody
     public R blogIndex(){
         List<BlogArticle> result = blogArticleService.selectListByRand();
+        //计算访问量
+        visitService.getVisitAndUpdate();
         if(CollectionUtils.isEmpty(result)){
             return R.failed(CommonEnum.ARTICLE_NULL.getResultMsg());
         }

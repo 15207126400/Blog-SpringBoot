@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import com.alibaba.fastjson.JSONObject;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysUser;
 import com.ivan.blog.service.*;
 import com.ivan.blog.utils.CurrentUserUtil;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -15,7 +18,6 @@ import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
@@ -23,7 +25,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.annotation.Resource;
 
 @Controller
@@ -36,6 +37,8 @@ public class LoginController {
     private SysUserService sysUserService;
     @Resource
     private StatisticsService statisticsService;
+    @Resource
+    private VisitService visitService;
 
     //用户登录次数计数  redisKey 前缀
     private String SHIRO_LOGIN_COUNT = "shiro-login-count";
@@ -58,6 +61,10 @@ public class LoginController {
         //博客数据统计(博客数,标签数,评论数)
         model.addAttribute("blogOv",statisticsService.blogOv());
         model.addAttribute("blogBackOv",statisticsService.blogBackOv());
+
+        Map<String, Object> resultMap = visitService.getVisit();
+        model.addAttribute("dateList",resultMap.get("dateList"));
+        model.addAttribute("totalCount",resultMap.get("totalCount"));
 
         return "home";
     }

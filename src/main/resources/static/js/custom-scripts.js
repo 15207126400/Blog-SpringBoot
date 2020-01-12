@@ -23,7 +23,7 @@
 
             /* MORRIS BAR CHART
 			-----------------------------------------*/
-            Morris.Bar({
+/*            Morris.Bar({
                 element: 'morris-bar-chart',
                 data: [{
                     y: '2006',
@@ -59,7 +59,7 @@
                 labels: ['Series A', 'Series B'],
                 hideHover: 'auto',
                 resize: true
-            });
+            });*/
 
             /* MORRIS DONUT CHART
 			----------------------------------------*/
@@ -144,7 +144,7 @@
 
             /* MORRIS LINE CHART
 			----------------------------------------*/
-            Morris.Line({
+            /*Morris.Line({
                 element: 'morris-line-chart',
                 data: [{
                     y: '2006',
@@ -180,9 +180,7 @@
                 labels: ['Series A', 'Series B'],
                 hideHover: 'auto',
                 resize: true
-            });
-           
-     
+            });*/
         },
 
         initialization: function () {
