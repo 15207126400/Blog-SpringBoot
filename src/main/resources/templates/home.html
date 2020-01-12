@@ -101,7 +101,6 @@
                 </div>
             </div>
 
-
             <!--博客概况-->
             <div class="row">
                 <div class="col-sm-12 col-xs-12">
@@ -115,11 +114,6 @@
                     </div>
                 </div>
             </div>
-
-            <!--数据接收-->
-            <input id="articleCount" type="hidden" th:value="${blogOv.articleCount}" />
-            <input id="tagsCount" type="hidden" th:value="${blogOv.tagsCount}" />
-            <input id="commontCount" type="hidden" th:value="${blogOv.commontCount}" />
         </div>
     </div>
 </div>
@@ -183,22 +177,20 @@
     })
 
     //数据统计
-    var articleCount = $("#articleCount").val()
-    var tagsCount = $("#tagsCount").val()
-    var commontCount = $("#commontCount").val()
+    var blogOv = [[${blogOv}]]
 
     //博客概览
     Morris.Donut({
         element: 'morris-donut-chart',
         data: [{
             label: "文章",
-            value: articleCount
+            value: blogOv.articleCount
         }, {
             label: "标签",
-            value: tagsCount
+            value: blogOv.tagsCount
         }, {
             label: "评论",
-            value: commontCount
+            value: blogOv.commontCount
         }],
         resize: true,
         colors: ["#3c8dbc", "#f56954", "#00a65a"],

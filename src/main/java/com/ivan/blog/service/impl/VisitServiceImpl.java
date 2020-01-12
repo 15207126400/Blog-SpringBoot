@@ -19,8 +19,8 @@ import java.util.*;
 @Slf4j
 public class VisitServiceImpl implements VisitService {
 
-    //public final static String FILE_PATH = "/home/ftp/files/blog/visit-count.txt";
-    public final static String FILE_PATH = "E:/visit-count.txt";
+    public final static String FILE_PATH = "/home/ftp/files/blog/visit-count.txt";
+    //public final static String FILE_PATH = "E:/visit-count.txt";
 
     @Override
     public Map<String, Object> getVisit() {
