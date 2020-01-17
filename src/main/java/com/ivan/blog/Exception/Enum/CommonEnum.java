@@ -13,8 +13,8 @@ import lombok.Getter;
 public enum  CommonEnum{
 
     // 数据操作错误定义
-    SUCCESS(200, "成功!"),
-    ERROR(-1, "失败!"),
+    SUCCESS(200, "请求成功!"),
+    ERROR(-1, "请求失败!"),
     BODY_NOT_MATCH(400,"请求的数据格式不符!"),
     SIGNATURE_NOT_MATCH(401,"请求的数字签名不匹配!"),
     NOT_FOUND(404, "未找到该资源!"),

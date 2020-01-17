@@ -1,5 +1,6 @@
 package com.ivan.blog.controller;
 
+import com.ivan.blog.Exception.BizException;
 import com.ivan.blog.Exception.Enum.CommonEnum;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.annotation.RequestLimit;
@@ -9,15 +10,20 @@ import com.ivan.blog.model.BlogComment;
 import com.ivan.blog.model.dto.BlogArticleDTO;
 import com.ivan.blog.model.dto.BlogCommentDTO;
 import com.ivan.blog.service.*;
-import com.ivan.blog.service.impl.VisitServiceImpl;
 import com.ivan.blog.utils.R;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /*
@@ -36,6 +42,7 @@ public class BlogController {
     private final BlogCommentService blogCommentService;
     private final StatisticsService statisticsService;
     private final VisitService visitService;
+    private final SignService signService;
 
     /**
      * 访问博客首页
@@ -162,7 +169,7 @@ public class BlogController {
      * @return
      */
     @MyLog("发表评论")
-    //@RequestLimit(count = 10)
+    @RequestLimit(count = 10)
     @RequestMapping("/postComment")
     @ResponseBody
     public R postComment(BlogCommentDTO blogCommentDTO){
@@ -196,6 +203,19 @@ public class BlogController {
     @ResponseBody
     public R getStatistical(){
         Map<String, Integer> result = statisticsService.blogOv();
+
+        return R.ok(result);
+    }
+
+    /**
+     * 获取github用户信息
+     * @param code
+     * @return
+     */
+    @RequestMapping("/getToken")
+    @ResponseBody
+    public R<String> getToken(String code){
+        String result = signService.githubSign(code);
 
         return R.ok(result);
     }
