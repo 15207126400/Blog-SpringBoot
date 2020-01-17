@@ -17,12 +17,12 @@ import java.lang.annotation.*;
 public @interface RequestLimit {
 
     /**
-     * 允许访问的次数，默认值20
+     * 允许访问的次数，默认值10
      */
-    int count() default 20;
+    int count() default 10;
 
     /**
-     * 时间段，单位为毫秒，默认值一分钟
+     * 时间段，单位为毫秒，默认值2分钟
      */
-    long time() default 60000;
+    long time() default 120000;
 }

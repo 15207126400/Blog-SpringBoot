@@ -41,44 +41,43 @@ public class RequestLimitAop {
     @Before("within(@org.springframework.stereotype.Controller *) && @annotation(limit)")
     public void requestLimit(JoinPoint joinPoint, RequestLimit limit){
         //Object[] args = joinPoint.getArgs();
-        synchronized(this) {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-            String ip = IpAndAddrUtil.getIp(request);
-            log.info("访问的ip地址为：{}", ip);
-            String url = request.getRequestURL().toString();
-            String key = "req_limit_".concat(url).concat("_").concat(ip);
-
-            boolean checkResult = checkByRedis(limit, key);
-            log.info("访问返回结果为：{}", checkResult);
-            if (!checkResult) {
-                log.info("requestLimited," + "[用户ip:{}],[访问地址:{}]超过了限定的次数[{}]次", ip, url, limit.count());
-                response.setCharacterEncoding("UTF-8");
-                response.setHeader("Content-Type", "text/json;charset=UTF-8");
-                response.setHeader("icop-content-type", "exception");
-                PrintWriter writer = null;
-                JsonGenerator jsonGenerator = null;
-                try {
-                    writer = response.getWriter();
-                    jsonGenerator = (new ObjectMapper()).getFactory().createGenerator(writer);
-                    jsonGenerator.writeObject(CommonEnum.REQUEST_LOCK.getResultMsg());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                } finally {
-                    writer.flush();
-                    writer.close();
-                }
-                throw new BizException(CommonEnum.REQUEST_TOO_FREQUENT);
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        String ip = IpAndAddrUtil.getIp(request);
+        log.info("访问的ip地址为：{}", ip);
+        String url = request.getRequestURL().toString();
+        String key = "req_limit_".concat(url).concat("_").concat(ip);
+        //判断是否可以继续请求
+        boolean checkResult = checkByRedis(limit, key);
+        log.info("访问返回结果为：{}", checkResult);
+        if (!checkResult) {
+            log.info("requestLimited," + "[用户ip:{}],[访问地址:{}]超过了限定的次数[{}]次", ip, url, limit.count());
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Type", "text/json;charset=UTF-8");
+            response.setHeader("icop-content-type", "exception");
+            PrintWriter writer = null;
+            JsonGenerator jsonGenerator = null;
+            try {
+                writer = response.getWriter();
+                jsonGenerator = (new ObjectMapper()).getFactory().createGenerator(writer);
+                jsonGenerator.writeObject(CommonEnum.REQUEST_LOCK.getResultMsg());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } finally {
+                writer.flush();
+                writer.close();
             }
+            throw new BizException(CommonEnum.REQUEST_TOO_FREQUENT);
         }
     }
 
-    private boolean checkByRedis(RequestLimit limit, String key) {
+    private synchronized boolean checkByRedis(RequestLimit limit, String key) {
         RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, stringRedisTemplate.getConnectionFactory());
         Long increment = entityIdCounter.getAndIncrement();
         ValueOperations redis = stringRedisTemplate.opsForValue();
         //设置有效时间和累计次数
-        redis.set(key, "1", 60*60, TimeUnit.SECONDS);
+        //redis.set(key, "1", 2*60, TimeUnit.SECONDS);
+        redis.set(key, "1", limit.time(), TimeUnit.MILLISECONDS);
         Long incrByCount = redis.increment(key, increment);
         //验证有效时间
         Long expire = stringRedisTemplate.boundHashOps(key).getExpire();
