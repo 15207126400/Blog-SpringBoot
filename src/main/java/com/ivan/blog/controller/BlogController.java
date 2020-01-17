@@ -173,9 +173,6 @@ public class BlogController {
     @RequestMapping("/postComment")
     @ResponseBody
     public R postComment(BlogCommentDTO blogCommentDTO){
-        if((blogCommentDTO.getName()).indexOf("博主") != -1){
-            return R.failed(CommonEnum.COMMENT_NAME_IL.getResultMsg());
-        }
         blogCommentService.postComment(blogCommentDTO);
 
         return R.ok();
