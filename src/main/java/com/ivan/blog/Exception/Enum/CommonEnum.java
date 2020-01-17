@@ -20,7 +20,7 @@ public enum  CommonEnum{
     NOT_FOUND(404, "未找到该资源!"),
     INTERNAL_SERVER_ERROR(500, "服务器内部错误!"),
     REQUEST_TOO_FREQUENT(503,"请求过于频繁,请稍后再试!"),
-    REQUEST_LOCK(505,"你存在恶意攻击行为,IP将被锁定!"),
+    REQUEST_LOCK(505,"你存在恶意攻击行为,服务器拒绝访问!"),
 
 
     /* 博客前端 001~100 */

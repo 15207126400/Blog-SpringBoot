@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -29,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  *  @Date: 2020/1/1 15:42
  */
 @Aspect
-//@Component
+@Component
 @Slf4j
 @SuppressWarnings("unchecked")
 public class RequestLimitAop {
@@ -39,33 +40,36 @@ public class RequestLimitAop {
 
     @Before("within(@org.springframework.stereotype.Controller *) && @annotation(limit)")
     public void requestLimit(JoinPoint joinPoint, RequestLimit limit){
-        Object[] args = joinPoint.getArgs();
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-        String ip = IpAndAddrUtil.getIp(request);
-        log.info("访问的ip地址为：{}", ip);
-        String url = request.getRequestURL().toString();
-        String key = "req_limit_".concat(url).concat("_").concat(ip);
-        boolean checkResult = checkByRedis(limit, key);
-        log.info("访问返回结果为：{}", checkResult);
-        if (!checkResult) {
-            log.info("requestLimited," + "[用户ip:{}],[访问地址:{}]超过了限定的次数[{}]次", ip, url, limit.count());
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-Type", "text/json;charset=UTF-8");
-            response.setHeader("icop-content-type", "exception");
-            PrintWriter writer = null;
-            JsonGenerator jsonGenerator = null;
-            try {
-                writer = response.getWriter();
-                jsonGenerator = (new ObjectMapper()).getFactory().createGenerator(writer);
-                jsonGenerator.writeObject(CommonEnum.REQUEST_LOCK.getResultMsg());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } finally {
-                writer.flush();
-                writer.close();
+        //Object[] args = joinPoint.getArgs();
+        synchronized(this) {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+            String ip = IpAndAddrUtil.getIp(request);
+            log.info("访问的ip地址为：{}", ip);
+            String url = request.getRequestURL().toString();
+            String key = "req_limit_".concat(url).concat("_").concat(ip);
+
+            boolean checkResult = checkByRedis(limit, key);
+            log.info("访问返回结果为：{}", checkResult);
+            if (!checkResult) {
+                log.info("requestLimited," + "[用户ip:{}],[访问地址:{}]超过了限定的次数[{}]次", ip, url, limit.count());
+                response.setCharacterEncoding("UTF-8");
+                response.setHeader("Content-Type", "text/json;charset=UTF-8");
+                response.setHeader("icop-content-type", "exception");
+                PrintWriter writer = null;
+                JsonGenerator jsonGenerator = null;
+                try {
+                    writer = response.getWriter();
+                    jsonGenerator = (new ObjectMapper()).getFactory().createGenerator(writer);
+                    jsonGenerator.writeObject(CommonEnum.REQUEST_LOCK.getResultMsg());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } finally {
+                    writer.flush();
+                    writer.close();
+                }
+                throw new BizException(CommonEnum.REQUEST_TOO_FREQUENT);
             }
-            throw new BizException(CommonEnum.REQUEST_TOO_FREQUENT);
         }
     }
 
@@ -74,7 +78,7 @@ public class RequestLimitAop {
         Long increment = entityIdCounter.getAndIncrement();
         ValueOperations redis = stringRedisTemplate.opsForValue();
         //设置有效时间和累计次数
-        redis.set(key, "1", 2*60, TimeUnit.SECONDS);
+        redis.set(key, "1", 60*60, TimeUnit.SECONDS);
         Long incrByCount = redis.increment(key, increment);
         //验证有效时间
         Long expire = stringRedisTemplate.boundHashOps(key).getExpire();

@@ -169,7 +169,7 @@ public class BlogController {
      * @return
      */
     @MyLog("发表评论")
-    @RequestLimit(count = 10)
+    @RequestLimit(count = 5)
     @RequestMapping("/postComment")
     @ResponseBody
     public R postComment(BlogCommentDTO blogCommentDTO){
