@@ -7,6 +7,8 @@ import com.ivan.blog.service.BlogCategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -38,5 +40,18 @@ public class BlogCategoryServiceImpl extends ServiceImpl<BlogCategoryMapper, Blo
     @Override
     public List<BlogCategory> selectCategoryByArticel(Integer id) {
         return blogCategoryMapper.selectCategoryByArticel(id);
+    }
+
+    /**
+     * 提取文章标签名称
+     * @return
+     */
+    public List<String> extCategory(List<BlogCategory> categorys){
+        List<String> list = new ArrayList<>();
+        for(BlogCategory item : categorys){
+            list.add(item.getName());
+        }
+
+        return list;
     }
 }

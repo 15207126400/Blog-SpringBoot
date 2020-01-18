@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *
  */
 @SpringBootApplication
-@EnableTransactionManagement
 @MapperScan("com.ivan.blog.dao")
 public class BlogApplication {
 

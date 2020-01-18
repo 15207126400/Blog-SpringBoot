@@ -1,6 +1,7 @@
 package com.ivan.blog.controller;
 
-import com.ivan.blog.Exception.BizException;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ivan.blog.Exception.Enum.CommonEnum;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.annotation.RequestLimit;
@@ -8,22 +9,17 @@ import com.ivan.blog.model.BlogArticle;
 import com.ivan.blog.model.BlogCategory;
 import com.ivan.blog.model.BlogComment;
 import com.ivan.blog.model.dto.BlogArticleDTO;
-import com.ivan.blog.model.dto.BlogCommentDTO;
+import com.ivan.blog.model.vo.BlogCommentVO;
 import com.ivan.blog.service.*;
 import com.ivan.blog.utils.R;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /*
@@ -76,7 +72,7 @@ public class BlogController {
         //查询文章分类
         for(BlogArticleDTO item : result){
             List<BlogCategory> categorys = blogCategoryService.selectCategoryByArticel(item.getId());
-            item.setCategory(extCategory(categorys).toString());
+            item.setCategory(blogCategoryService.extCategory(categorys).toString());
         }
 
 
@@ -98,7 +94,7 @@ public class BlogController {
         //查询文章分类
         for(BlogArticleDTO item : result){
             List<BlogCategory> categorys = blogCategoryService.selectCategoryByArticel(item.getId());
-            item.setCategory(extCategory(categorys).toString());
+            item.setCategory(blogCategoryService.extCategory(categorys).toString());
         }
 
         return R.ok(result);
@@ -116,22 +112,9 @@ public class BlogController {
         BlogArticleDTO result = blogArticleService.selectById(id);
         List<BlogCategory> categorys = blogCategoryService.selectCategoryByArticel(id);
 
-        result.setCategory(extCategory(categorys).toString());
+        result.setCategory(blogCategoryService.extCategory(categorys).toString());
 
         return R.ok(result);
-    }
-
-    /**
-     * 提取文章标签名称
-     * @return
-     */
-    private List<String> extCategory(List<BlogCategory> categorys){
-        List<String> list = new ArrayList<>();
-        for(BlogCategory item : categorys){
-            list.add(item.getName());
-        }
-
-        return list;
     }
 
     /**
@@ -172,8 +155,8 @@ public class BlogController {
     @RequestLimit(count = 5)
     @RequestMapping("/postComment")
     @ResponseBody
-    public R postComment(BlogCommentDTO blogCommentDTO){
-        blogCommentService.postComment(blogCommentDTO);
+    public R postComment(BlogComment blogComment){
+        blogCommentService.postComment(blogComment);
 
         return R.ok();
     }
@@ -184,9 +167,8 @@ public class BlogController {
      */
     @RequestMapping("/getCommentList")
     @ResponseBody
-    public R getCommentList(Integer articleId){
-        //查询当前文章下的所有评论
-        List<BlogComment> result = blogCommentService.selectByArticel(articleId);
+    public R<IPage> getCommentList(@Param("page") Page page, @Param("articleId") Integer articleId){
+        IPage<BlogCommentVO> result = blogCommentService.selectPage(page, articleId);
 
         return R.ok(result);
     }

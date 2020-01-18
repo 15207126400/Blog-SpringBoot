@@ -1,16 +1,21 @@
 package com.ivan.blog.service.impl;
 
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ivan.blog.dao.BlogCommentMapper;
 import com.ivan.blog.model.BlogComment;
 import com.ivan.blog.model.dto.BlogCommentDTO;
+import com.ivan.blog.model.vo.BlogCommentVO;
 import com.ivan.blog.service.BlogCommentService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,15 +46,9 @@ public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogC
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void postComment(BlogCommentDTO blogCommentDTO){
-        Map<String,Object> map = new HashMap<>();
-
-        BlogComment blogComment = new BlogComment();
-        BeanUtils.copyProperties(blogCommentDTO,blogComment);
-
+    public void postComment(BlogComment blogComment){
         //保存评论
         blogCommentMapper.insert(blogComment);
-
     }
 
     /**
@@ -58,27 +57,41 @@ public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogC
      * @return
      */
     @Override
-    public List<BlogComment> selectByArticel(Integer articleId) {
-        List<BlogComment> blogCommentList = blogCommentMapper.selectByArticel(articleId);
+    public IPage<BlogCommentVO> selectPage(Page page, Integer articleId) {
+        LambdaQueryWrapper<BlogComment> queryWrapper = Wrappers.<BlogComment>lambdaQuery()
+                .eq(StringUtils.isNotBlank(String.valueOf(articleId)),BlogComment::getArticleId, articleId);
+        IPage<BlogComment> iPage = blogCommentMapper.selectPage(page, queryWrapper);
+        IPage<BlogCommentVO> iPageVo = new Page();
+        BeanUtils.copyProperties(iPage, iPageVo);
+
+        List<BlogCommentVO> records = iPage.getRecords().stream().map(e -> {
+            BlogCommentVO blogCommentVO = new BlogCommentVO();
+            BeanUtils.copyProperties(e, blogCommentVO);
+
+            return blogCommentVO;
+        }).collect(Collectors.toList());
+
         //递归
-        recursiveComments(blogCommentList);
+        recursiveComments(records);
 
         //有父元素的集合list需要从原list中抹除
-        Iterator<BlogComment> it = blogCommentList.iterator();
+        Iterator<BlogCommentVO> it = records.iterator();
         while(it.hasNext()){
-            BlogComment x = it.next();
+            BlogCommentVO x = it.next();
             if(x.getParentId() != 0) it.remove();
         }
 
-        return blogCommentList;
+        iPageVo.setRecords(records);
+
+        return iPageVo;
     }
 
     //递归
-    private void recursiveComments(List<BlogComment> blogCommentList){
+    private void recursiveComments(List<BlogCommentVO> blogCommentList){
         if (blogCommentList.size() > 0) {
-            for (BlogComment blogComment: blogCommentList) {
+            for (BlogCommentVO blogComment: blogCommentList) {
                 //通过父编号查询
-                List<BlogComment> blogComments = blogCommentMapper.selectByParent(blogComment.getId());
+                List<BlogCommentVO> blogComments = blogCommentMapper.selectByParent(blogComment.getId());
                 blogComment.setBlogCommentList(blogComments);
                 recursiveComments(blogComments);
             }

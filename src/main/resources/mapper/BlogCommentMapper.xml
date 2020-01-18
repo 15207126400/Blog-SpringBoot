@@ -34,15 +34,14 @@
     where id = #{id}
   </select>
 
-  <!--根据文章id查询评论列表-->
-  <select id="selectByArticel" resultType="com.ivan.blog.model.BlogComment">
-    select <include refid="Join_Column_List"/> from blog_comment bc
-    left join blog_article ba on ba.id = bc.article_id
-    where ba.id = #{articleId}
+  <select id="selectByParent" resultType="com.ivan.blog.model.vo.BlogCommentVO">
+    select <include refid="Base_Column_List"/> from blog_comment where parent_id = #{parentId}
   </select>
 
-  <select id="selectByParent" resultType="com.ivan.blog.model.BlogComment">
-    select <include refid="Base_Column_List"/> from blog_comment where parent_id = #{parentId}
+  <select id="mySelectPage" resultType="com.ivan.blog.model.BlogComment">
+    select <include refid="Base_Column_List"/>
+    from blog_comment
+    where article_id = #{articleId}
   </select>
 
 </mapper>

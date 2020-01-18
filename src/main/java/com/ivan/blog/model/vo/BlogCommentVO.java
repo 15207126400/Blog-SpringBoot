@@ -1,11 +1,11 @@
-package com.ivan.blog.model;
+package com.ivan.blog.model.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ivan.blog.model.BlogComment;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -13,10 +13,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class BlogComment implements Serializable {
+public class BlogCommentVO implements Serializable {
     private static final long serialVersionUID = -1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     private String content;
@@ -34,4 +33,8 @@ public class BlogComment implements Serializable {
 
     private Integer parentId;
 
+    /**
+     * 子评论集合
+     */
+    private List<BlogCommentVO> blogCommentList;
 }

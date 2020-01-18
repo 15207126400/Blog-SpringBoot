@@ -1,11 +1,12 @@
 package com.ivan.blog.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ivan.blog.model.BlogComment;
-import com.ivan.blog.model.dto.BlogCommentDTO;
+import com.ivan.blog.model.vo.BlogCommentVO;
 
 import java.util.List;
-import java.util.Map;
 
 /*
  *  @Author: Ivan
@@ -18,7 +19,8 @@ public interface BlogCommentService extends IService<BlogComment> {
 
     BlogComment selectById(Integer id);
 
-    void postComment(BlogCommentDTO blogCommentDTO);
+    void postComment(BlogComment blogComment);
 
-    List<BlogComment> selectByArticel(Integer articleId);
+    IPage<BlogCommentVO> selectPage(Page page, Integer articleId);
+
 }

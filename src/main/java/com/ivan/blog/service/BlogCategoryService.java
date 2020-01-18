@@ -13,4 +13,6 @@ public interface BlogCategoryService extends IService<BlogCategory> {
     List<BlogCategory> categoryList();
 
     List<BlogCategory> selectCategoryByArticel(Integer id);
+
+    List<String> extCategory(List<BlogCategory> categorys);
 }
