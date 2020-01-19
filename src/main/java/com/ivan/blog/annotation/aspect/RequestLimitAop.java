@@ -43,13 +43,11 @@ public class RequestLimitAop {
         //Object[] args = joinPoint.getArgs();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-        String ip = IpAndAddrUtil.getIp(request);
-        log.info("访问的ip地址为：{}", ip);
+        String ip = IpAndAddrUtil.getCliectIp(request);
         String url = request.getRequestURL().toString();
         String key = "req_limit_".concat(url).concat("_").concat(ip);
         //判断是否可以继续请求
         boolean checkResult = checkByRedis(limit, key);
-        log.info("访问返回结果为：{}", checkResult);
         if (!checkResult) {
             log.info("requestLimited," + "[用户ip:{}],[访问地址:{}]超过了限定的次数[{}]次", ip, url, limit.count());
             response.setCharacterEncoding("UTF-8");

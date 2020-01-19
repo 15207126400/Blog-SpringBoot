@@ -37,6 +37,8 @@ public class SysLogAspect {
     public void logPoinCut() {
     }
 
+
+
     //切面 配置通知
     @AfterReturning("logPoinCut()")
     public void saveSysLog(JoinPoint joinPoint) {
@@ -75,7 +77,7 @@ public class SysLogAspect {
 
         //获取用户ip地址
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String ip = IpAndAddrUtil.getIp(request);
+        String ip = IpAndAddrUtil.getCliectIp(request);
         if(StringUtils.isNotBlank(ip)){
             sysLog.setIp(ip);
         }
