@@ -21,8 +21,8 @@ public class IpAndAddrUtil {
 
     /**
      * 获取客户端ip地址
-     * @param request
-     * @return
+     * @param request   请求对象
+     * @return          实际ip
      */
     public static String getCliectIp(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");

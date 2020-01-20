@@ -59,7 +59,7 @@ public class BlogController {
     }
 
     /**
-     * 获取文章列表 ---- 轮播图
+     * 获取文章列表
      * @return
      */
     @RequestMapping("/getArticleList")
@@ -75,6 +75,20 @@ public class BlogController {
             item.setCategory(blogCategoryService.extCategory(categorys).toString());
         }
 
+        return R.ok(result);
+    }
+
+    /**
+     * 推荐文章 ---- 三条数据
+     * @return
+     */
+    @RequestMapping("/getListByRand")
+    @ResponseBody
+    public R getListByRand(){
+        List<BlogArticle> result = blogArticleService.selectListByRand();
+        if(CollectionUtils.isEmpty(result)){
+            return R.failed(CommonEnum.ARTICLE_NULL.getResultMsg());
+        }
 
         return R.ok(result);
     }
@@ -111,8 +125,12 @@ public class BlogController {
     public R getArticle(Integer id){
         BlogArticleDTO result = blogArticleService.selectById(id);
         List<BlogCategory> categorys = blogCategoryService.selectCategoryByArticel(id);
-
+        //分类集合
         result.setCategory(blogCategoryService.extCategory(categorys).toString());
+        //上一篇博文
+        result.setBeforeArticle(blogArticleService.selectArticleByBefore(id));
+        //下一篇博文
+        result.setAfterArticle(blogArticleService.selectArticleByAfter(id));
 
         return R.ok(result);
     }
@@ -127,21 +145,6 @@ public class BlogController {
         List<BlogCategory> result = blogCategoryService.list();
         if(CollectionUtils.isEmpty(result)){
             return R.failed(CommonEnum.CATEGORY_NULL.getResultMsg());
-        }
-
-        return R.ok(result);
-    }
-
-    /**
-     * 随机获取文章 ---- 三条数据
-     * @return
-     */
-    @RequestMapping("/getListByRand")
-    @ResponseBody
-    public R getListByRand(){
-        List<BlogArticle> result = blogArticleService.selectListByRand();
-        if(CollectionUtils.isEmpty(result)){
-            return R.failed(CommonEnum.ARTICLE_NULL.getResultMsg());
         }
 
         return R.ok(result);

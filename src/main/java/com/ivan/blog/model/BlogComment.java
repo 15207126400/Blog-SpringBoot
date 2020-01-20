@@ -34,4 +34,8 @@ public class BlogComment implements Serializable {
 
     private Integer parentId;
 
+    private String articleTitle;
+
+    private Integer ladder;
+
 }

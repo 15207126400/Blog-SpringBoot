@@ -1,14 +1,14 @@
 package com.ivan.blog.service.impl;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ivan.blog.dao.BlogArticleMapper;
 import com.ivan.blog.dao.BlogCommentMapper;
+import com.ivan.blog.model.BlogArticle;
 import com.ivan.blog.model.BlogComment;
-import com.ivan.blog.model.dto.BlogCommentDTO;
 import com.ivan.blog.model.vo.BlogCommentVO;
 import com.ivan.blog.service.BlogCommentService;
 import lombok.AllArgsConstructor;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogComment> implements BlogCommentService {
 
     private final BlogCommentMapper blogCommentMapper;
+    private final BlogArticleMapper blogArticleMapper;
 
     @Override
     public List<BlogComment> selectList() {
@@ -47,6 +48,19 @@ public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogC
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void postComment(BlogComment blogComment){
+        //获取文章信息并存储
+        BlogArticle article = blogArticleMapper.selectById(blogComment.getArticleId());
+        blogComment.setArticleTitle(article.getTitle());
+
+        //如果是发表评论,获取该文章评论数量,设置该评论当前楼层
+        if(blogComment.getParentId() == 0){
+            LambdaQueryWrapper<BlogComment> queryWrapper = Wrappers.<BlogComment>lambdaQuery()
+                    .eq(BlogComment::getArticleId,blogComment.getArticleId())
+                    .eq(BlogComment::getParentId,0);
+            Integer count = blogCommentMapper.selectCount(queryWrapper);
+            blogComment.setLadder(count + 1);
+        }
+
         //保存评论
         blogCommentMapper.insert(blogComment);
     }

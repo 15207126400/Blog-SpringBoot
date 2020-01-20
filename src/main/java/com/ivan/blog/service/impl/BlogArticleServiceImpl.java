@@ -139,4 +139,25 @@ public class BlogArticleServiceImpl extends ServiceImpl<BlogArticleMapper, BlogA
 
         return blogArticleMapper.selectListByRand();
     }
+
+    @Override
+    public BlogArticle selectArticleByBefore(Integer id) {
+        LambdaQueryWrapper<BlogArticle> queryWrapper = Wrappers.<BlogArticle>lambdaQuery()
+                .lt(BlogArticle::getId,id)
+                .orderByDesc(BlogArticle::getId)
+                .last("limit 1");
+
+        return blogArticleMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public BlogArticle selectArticleByAfter(Integer id) {
+        LambdaQueryWrapper<BlogArticle> queryWrapper = Wrappers.<BlogArticle>lambdaQuery()
+                .gt(BlogArticle::getId,id)
+                .last("limit 1");
+
+        return blogArticleMapper.selectOne(queryWrapper);
+    }
+
+
 }

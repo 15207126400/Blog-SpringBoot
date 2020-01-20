@@ -48,7 +48,6 @@ public class CommentController {
     @RequestMapping("/commentReply/{id}")
     @RequiresPermissions("comment:reply")
     public String commentReply(Model model ,@PathVariable("id") Integer id){
-
         model.addAttribute("comment",blogCommentService.selectById(id));
 
         return "comment/commentReply";

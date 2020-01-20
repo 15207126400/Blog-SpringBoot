@@ -38,4 +38,18 @@ public interface BlogArticleService extends IService<BlogArticle> {
      * @return
      */
     List<BlogArticle> selectListByRand();
+
+    /**
+     * 获取上一篇博文
+     * @param id
+     * @return
+     */
+    BlogArticle selectArticleByBefore(Integer id);
+
+    /**
+     * 获取下一篇博文
+     * @param id
+     * @return
+     */
+    BlogArticle selectArticleByAfter(Integer id);
 }

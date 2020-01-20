@@ -22,24 +22,27 @@
                                     <!--表头部分-->
                                     <thead>
                                         <tr>
-                                            <th>编号</th>
-                                            <th style="width:100px;">昵称</th>
-                                            <th style="width:150px;">邮箱</th>
-                                            <th style="width:350px;">评论内容</th>
-                                            <th>评论时间</th>
+                                            <th style="width:50px;">编号</th>
+                                            <th style="width:150px;">评论文章</th>
+                                            <th style="width:150px;">昵称</th>
+                                            <th>评论内容</th>
                                             <th>操作</th>
+                                            <th style="width:130px;">评论时间</th>
+                                            <th style="width:70px;">操作</th>
                                         </tr>
                                     </thead>
                                     <!--数据-->
                                     <tbody>
                                         <tr th:each="comment : ${comments}">
                                             <td th:text="${comment.id}"></td>
+                                            <td th:text="${comment.articleTitle}"></td>
                                             <td th:text="${comment.name}"></td>
-                                            <td th:text="${comment.email}"></td>
                                             <td th:text="${comment.content}"></td>
+                                            <td th:if="${comment.parentId == 0}" th:text="发表"></td>
+                                            <td th:if="${comment.parentId != 0}" th:text="回复"></td>
                                             <td th:text="${#dates.format(comment.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                             <td>
-                                                <a th:href="@{/comment/commentReply/{id}(id=${comment.id})}">回复</a>
+                                                <a th:if="${comment.parentId == 0}" th:href="@{/comment/commentReply/{id}(id=${comment.id})}">回复</a>
                                                 <a href="javascript:void(0);" th:onclick="'javascript:delData('+${comment.id}+')'">删除</a>
                                             </td>
                                         </tr>

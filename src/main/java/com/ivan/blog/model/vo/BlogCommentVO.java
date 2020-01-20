@@ -33,6 +33,10 @@ public class BlogCommentVO implements Serializable {
 
     private Integer parentId;
 
+    private String articleTitle;
+
+    private Integer ladder;
+
     /**
      * 子评论集合
      */

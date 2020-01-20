@@ -21,8 +21,13 @@
                                     <div class="col-lg-6">
                                         <form id="formtest" method="post" onsubmit="return false" action="##" comment="form">
                                             <input name="parentId" type="hidden" th:value="${comment.id}">
-                                            <input name="name" type="hidden" th:value="博主">
+                                            <input name="name" type="hidden" value="Ivan">
+                                            <input name="avatarUrl" type="hidden" value="https://avatars0.githubusercontent.com/u/32918639?v=4">
                                             <input name="articleId" type="hidden" th:value="${comment.articleId}">
+                                            <div class="form-group">
+                                                <label>评论文章</label>
+                                                <input class="form-control" type="text" th:value="${comment.articleTitle}">
+                                            </div>
                                             <div class="form-group">
                                                 <label>评论信息</label>
                                                 <input class="form-control" type="text" th:value="${comment.content}">

@@ -18,4 +18,8 @@ public class BlogArticleDTO extends BlogArticle {
     private String category;
 
     private String content;
+
+    private BlogArticle beforeArticle;
+
+    private BlogArticle afterArticle;
 }

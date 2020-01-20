@@ -30,5 +30,9 @@ public class BlogCommentDTO implements Serializable {
     private Integer articleId;
 
     private Integer parentId;
+
+    private String articleTitle;
+
+    private Integer ladder;
 }
 
