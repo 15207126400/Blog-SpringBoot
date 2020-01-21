@@ -5,19 +5,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysLog;
 import com.ivan.blog.service.SysLogService;
-import com.ivan.blog.service.SysRoleService;
-import com.ivan.blog.utils.MD5Util;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /*
@@ -34,9 +29,10 @@ public class LogController {
     private final SysLogService sysLogService;
 
     /**
-     * 列表查询.
+     * 操作日志列表查询.
      * @return
      */
+    @MyLog("操作日志列表查询")
     @RequestMapping("/logList")
     @RequiresPermissions("log:list")
     public String logList(Model model){

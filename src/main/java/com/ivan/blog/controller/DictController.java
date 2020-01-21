@@ -1,5 +1,6 @@
 package com.ivan.blog.controller;
 
+import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysDict;
 import com.ivan.blog.service.SysDictService;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class DictController {
      * 数据字典列表查询.
      * @return
      */
+    @MyLog("数据字典列表查询")
     @RequestMapping("/dictList")
     @RequiresPermissions("dict:list")
     public String dictList(Model model){

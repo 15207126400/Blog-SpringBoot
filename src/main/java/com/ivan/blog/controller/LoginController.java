@@ -74,7 +74,6 @@ public class LoginController {
         return "lock";
     }
 
-    @MyLog(value = "用户登出操作")
     @RequestMapping(value="/logout",method=RequestMethod.GET)
     public String logout(){
         Session session = SecurityUtils.getSubject().getSession();
@@ -94,7 +93,7 @@ public class LoginController {
         }
     }
 
-    //@MyLog(value = "用户登录操作")
+    @MyLog(value = "后台登录")
     @RequestMapping(value="/ajaxLogin",method=RequestMethod.POST)
     @ResponseBody
     public Map<String,Object> submitLogin(String username,String password,Boolean rememberMe) {

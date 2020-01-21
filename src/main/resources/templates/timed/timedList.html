@@ -28,6 +28,7 @@
                                         <th>编号</th>
                                         <th>任务名</th>
                                         <th>时间设置</th>
+                                        <th>描述</th>
                                         <th>状态</th>
                                         <th>操作</th>
                                     </tr>
@@ -38,6 +39,7 @@
                                         <td th:text="${timed.id}"></td>
                                         <td th:text="${timed.name}"></td>
                                         <td th:text="${timed.cron}"></td>
+                                        <td th:text="${timed.description}"></td>
                                         <td th:if="${timed.status} eq 1" th:text="启用"></td>
                                         <td th:if="${timed.status} eq 2" th:text="禁用"></td>
                                         <td>

@@ -41,6 +41,7 @@ public class ArticleController {
      * 文章信息列表查询.
      * @return
      */
+    @MyLog("文章信息列表查询")
     @RequestMapping("/articleList")
     @RequiresPermissions("article:list")
     public String articleList(Model model){

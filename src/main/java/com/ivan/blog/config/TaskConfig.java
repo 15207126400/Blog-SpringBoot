@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @EnableScheduling   // 2.开启定时任务
 @AllArgsConstructor
 @Slf4j
-public class DynamicScheduleTaskConfig implements SchedulingConfigurer {
+public class TaskConfig implements SchedulingConfigurer {
 
     private final SysTimedMapper sysTimedMapper;
     private final SysLogMapper sysLogMapper;

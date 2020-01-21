@@ -19,6 +19,8 @@ public class SysTimed implements Serializable {
 
     private String name;
 
+    private String description;
+
     private String cron;
 
     private String status;

@@ -86,12 +86,8 @@ public class SysLogAspect {
 
         //获取ip所在地
         if(StringUtils.isNotBlank(ip)){
-            try {
-                String address = IpAndAddrUtil.getAddresses(ip, "utf-8");
-                sysLog.setAddress(address);
-            } catch (UnsupportedEncodingException e) {
-                throw new BizException(e);
-            }
+            String address = IpAndAddrUtil.getAddresses("ip=" + ip, "utf-8");
+            sysLog.setAddress(address);
         }
 
         //获取浏览器名称

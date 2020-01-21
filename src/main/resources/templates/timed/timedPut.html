@@ -27,15 +27,17 @@
                                                 <input class="form-control" name="name" type="text" placeholder="请输入任务名" th:value="${timed.name}">
                                             </div>
                                             <div class="form-group">
-                                                <label>字典项编号</label>
+                                                <label>时间设置</label>
                                                 <input class="form-control" name="cron" type="text" placeholder="请输入时间设置" th:value="${timed.cron}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>描述</label>
+                                                <input class="form-control" name="description" type="text" placeholder="请输入描述" th:value="${timed.description}">
                                             </div>
                                             <div class="form-group">
                                                 <label>状态</label>
                                                 <select name="status" class="form-control">
                                                     <option th:each="dict:${dicts}" th:selected="${dict.dictCode eq timed.status}" th:value="${dict.dictCode}" th:text="${dict.dictValue}"></option>
-<!--                                                    <option th:selected="${timed.status} eq 1" th:value="1">启用</option>-->
-<!--                                                    <option th:selected="${timed.status} eq 2" th:value="2">禁用</option>-->
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-default" onclick="sendAjax()">提交</button>

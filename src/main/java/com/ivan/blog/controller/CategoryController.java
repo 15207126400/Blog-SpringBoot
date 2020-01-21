@@ -32,6 +32,7 @@ public class CategoryController {
      * 分类列表查询.
      * @return
      */
+    @MyLog("分类列表查询")
     @RequestMapping("/categoryList")
     @RequiresPermissions("category:list")
     public String categoryList(Model model){

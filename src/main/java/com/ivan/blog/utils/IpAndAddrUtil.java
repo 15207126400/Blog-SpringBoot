@@ -102,7 +102,7 @@ public class IpAndAddrUtil {
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static String getAddresses(String content, String encodingString) throws UnsupportedEncodingException {
+    public static String getAddresses(String content, String encodingString){
         // 这里调用淘宝的接口
         String urlStr = "http://ip.taobao.com/service/getIpInfo.php";
         // 从http://whois.pconline.com.cn取得IP所在的省市区信息
@@ -279,15 +279,9 @@ public class IpAndAddrUtil {
 
     // 测试
     public static void main(String[] args) {
-        // 测试ip 219.136.134.157 中国=华南=广东省=广州市=越秀区=电信
         String ip = "27.18.104.199";
         String address = "";
-        try {
-            address = getAddresses(ip, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        address = getAddresses("ip="+ip, "utf-8");
         System.out.println(address);
     }
 }

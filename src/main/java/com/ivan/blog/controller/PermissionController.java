@@ -32,6 +32,7 @@ public class PermissionController {
      * 权限列表查询.
      * @return
      */
+    @MyLog("权限列表查询")
     @RequestMapping("/permissionList")
     @RequiresPermissions("permission:list")
     public String permissionList(Model model){

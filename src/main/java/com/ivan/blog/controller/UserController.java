@@ -38,6 +38,7 @@ public class UserController {
      * 用户列表查询.
      * @return
      */
+    @MyLog("用户列表查询")
     @RequestMapping("/userList")
     @RequiresPermissions("user:list")
     public String userList(Model model){

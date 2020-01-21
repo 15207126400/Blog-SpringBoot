@@ -119,7 +119,6 @@ public class BlogController {
      * @param id
      * @return
      */
-    @MyLog("访问博文内容")
     @RequestMapping("/getArticle")
     @ResponseBody
     public R getArticle(Integer id){
@@ -180,7 +179,6 @@ public class BlogController {
      * 统计各数量
      * @return
      */
-    @MyLog("访问博主信息")
     @RequestMapping("/getStatistical")
     @ResponseBody
     public R getStatistical(){

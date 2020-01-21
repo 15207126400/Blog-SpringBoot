@@ -38,9 +38,10 @@ public class RoleController {
     private SysUserService sysUserService;
 
     /**
-     * 角色查询.
+     * 角色列表查询.
      * @return
      */
+    @MyLog("角色列表查询")
     @RequestMapping("/roleList")
     @RequiresPermissions("role:list")
     public String roleInfo(Model model){
