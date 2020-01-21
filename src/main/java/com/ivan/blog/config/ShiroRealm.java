@@ -2,19 +2,15 @@ package com.ivan.blog.config;
 
 import com.ivan.blog.dao.*;
 import javax.annotation.Resource;
-
 import com.ivan.blog.model.SysRolePermission;
 import com.ivan.blog.model.SysUser;
 import com.ivan.blog.model.SysUserRole;
 import com.ivan.blog.service.SysUserService;
-import com.ivan.blog.utils.MD5Util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;

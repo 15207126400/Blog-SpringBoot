@@ -2,107 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ivan.blog.dao.SysDictMapper" >
   <resultMap id="BaseResultMap" type="com.ivan.blog.model.SysDict" >
-    <constructor >
-      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="type_code" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="type_value" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="dict_code" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="dict_value" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="status" jdbcType="CHAR" javaType="java.lang.String" />
-    </constructor>
+    <id column="id" property="id" />
+    <result column="type_code" property="typeCode" />
+    <result column="type_value" property="typeValue" />
+    <result column="dict_code" property="dictCode" />
+    <result column="dict_value" property="dictValue" />
+    <result column="status" property="status" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, type_code, type_value, dict_code, dict_value, status
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from sys_dict
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from sys_dict
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.ivan.blog.model.SysDict" >
-    insert into sys_dict (id, type_code, type_value, 
-      dict_code, dict_value, status
-      )
-    values (#{id,jdbcType=INTEGER}, #{typeCode,jdbcType=INTEGER}, #{typeValue,jdbcType=VARCHAR}, 
-      #{dictCode,jdbcType=INTEGER}, #{dictValue,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.ivan.blog.model.SysDict" >
-    insert into sys_dict
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="typeCode != null" >
-        type_code,
-      </if>
-      <if test="typeValue != null" >
-        type_value,
-      </if>
-      <if test="dictCode != null" >
-        dict_code,
-      </if>
-      <if test="dictValue != null" >
-        dict_value,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="typeCode != null" >
-        #{typeCode,jdbcType=INTEGER},
-      </if>
-      <if test="typeValue != null" >
-        #{typeValue,jdbcType=VARCHAR},
-      </if>
-      <if test="dictCode != null" >
-        #{dictCode,jdbcType=INTEGER},
-      </if>
-      <if test="dictValue != null" >
-        #{dictValue,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=CHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ivan.blog.model.SysDict" >
-    update sys_dict
-    <set >
-      <if test="typeCode != null" >
-        type_code = #{typeCode,jdbcType=INTEGER},
-      </if>
-      <if test="typeValue != null" >
-        type_value = #{typeValue,jdbcType=VARCHAR},
-      </if>
-      <if test="dictCode != null" >
-        dict_code = #{dictCode,jdbcType=INTEGER},
-      </if>
-      <if test="dictValue != null" >
-        dict_value = #{dictValue,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=CHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.ivan.blog.model.SysDict" >
-    update sys_dict
-    set type_code = #{typeCode,jdbcType=INTEGER},
-      type_value = #{typeValue,jdbcType=VARCHAR},
-      dict_code = #{dictCode,jdbcType=INTEGER},
-      dict_value = #{dictValue,jdbcType=VARCHAR},
-      status = #{status,jdbcType=CHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>

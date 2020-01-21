@@ -1,79 +1,81 @@
 package com.ivan.blog.controller;
 
-import com.ivan.blog.model.SysDict;
+import com.ivan.blog.model.SysTimed;
 import com.ivan.blog.service.SysDictService;
+import com.ivan.blog.service.SysTimedService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.Map;
 
 /*
  *  @Author: Ivan
- *  @Description:   数据字典控制类
+ *  @Description:   定时任务控制类
  *  @Date: 2019/10/31 09:38
  */
 @Controller
-@RequestMapping("/dict")
+@RequestMapping("/timed")
 @AllArgsConstructor
 @Slf4j
-public class DictController {
+public class TimedController {
 
+    private final SysTimedService sysTimedService;
     private final SysDictService sysDictService;
 
     /**
-     * 数据字典列表查询.
+     * 列表查询.
      * @return
      */
-    @RequestMapping("/dictList")
-    @RequiresPermissions("dict:list")
-    public String dictList(Model model){
+    @RequestMapping("/timedList")
+    @RequiresPermissions("timed:list")
+    public String logList(Model model){
+        model.addAttribute("timeds",sysTimedService.list());
 
-        model.addAttribute("dicts",sysDictService.list());
-        log.info("【执行数据字典列表查询操作: /dict/dictList】");
-
-        return "dict/dictList";
+        return "timed/timedList";
     }
 
     /**
      * 新增 页面跳转
      * @return
      */
-    @RequestMapping("/dictAdd")
-    @RequiresPermissions("dict:add")
+    @RequestMapping("/timedAdd")
+    @RequiresPermissions("timed:add")
     public String dictAdd(Model model){
         model.addAttribute("dicts",sysDictService.findListByType(1000));
 
-        return "dict/dictAdd";
+        return "timed/timedAdd";
     }
 
     /**
      * 修改 页面跳转
      * @return
      */
-    @RequestMapping("/dictPut/{id}")
-    @RequiresPermissions("dict:put")
+    @RequestMapping("/timedPut/{id}")
+    @RequiresPermissions("timed:put")
     public String dictPut(Model model ,@PathVariable("id") Integer id){
-        model.addAttribute("dict",sysDictService.getById(id));
+        model.addAttribute("timed",sysTimedService.getById(id));
         model.addAttribute("dicts",sysDictService.findListByType(1000));
 
-        return "dict/dictPut";
+        return "timed/timedPut";
     }
 
     @RequestMapping("insertOrUpdate")
     @ResponseBody
-    public Map<String,Object> insertOrUpdate(SysDict sysDict,String op){
+    public Map<String,Object> insertOrUpdate(SysTimed sysTimed, String op){
         Map<String,Object> map = new HashMap<>();
         if(op.equals("1")){
-            boolean result = sysDictService.save(sysDict);
+            boolean result = sysTimedService.save(sysTimed);
             if(result){
                 map.put("status",200);
             }
         } else {
-            boolean result = sysDictService.updateById(sysDict);
+            boolean result = sysTimedService.updateById(sysTimed);
             if(result){
                 map.put("status",200);
             }
@@ -83,15 +85,15 @@ public class DictController {
     }
 
     /**
-     * 数据字典删除;
+     * 删除;
      * @return
      */
-    @RequestMapping("/dictDel")
+    @RequestMapping("/timedDel")
     @ResponseBody
-    @RequiresPermissions("dict:del")
-    public Map<String, Integer> dictDel(Integer id){
+    @RequiresPermissions("timed:del")
+    public Map<String, Integer> logDel(Integer id){
         Map<String, Integer> map = new HashMap<>();
-        boolean result = sysDictService.removeById(id);
+        boolean result = sysTimedService.removeById(id);
         if(result){
             map.put("status",200);
         }
