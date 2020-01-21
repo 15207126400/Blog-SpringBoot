@@ -26,9 +26,9 @@ public class SysLog implements Serializable {
 
     private String ip;
 
-    private String browser;
+    private String address;
 
-    private String version;
+    private String browser;
 
     private String system;
 
