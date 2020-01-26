@@ -41,6 +41,12 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: ivan
+    password: 135555
+    virtual-host: /
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/*
+ *  @Author: Ivan
+ *  @Description:   mybatisplus 配置
+ *  @Date: 2019/10/31 23:04
+ */
 @Configuration
 @EnableTransactionManagement
 public class MybatisPlusConfig {

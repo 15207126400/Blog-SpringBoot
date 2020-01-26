@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import com.alibaba.fastjson.JSONObject;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysUser;
+import com.ivan.blog.mq.hello.HelloReceiver1;
+import com.ivan.blog.mq.hello.HelloSender1;
 import com.ivan.blog.service.*;
 import com.ivan.blog.utils.CurrentUserUtil;
 import lombok.AllArgsConstructor;
@@ -39,6 +41,8 @@ public class LoginController {
     private StatisticsService statisticsService;
     @Resource
     private VisitService visitService;
+    @Resource
+    private HelloSender1 helloSender1;
 
     //用户登录次数计数  redisKey 前缀
     private String SHIRO_LOGIN_COUNT = "shiro-login-count";
@@ -62,9 +66,13 @@ public class LoginController {
         model.addAttribute("blogOv",statisticsService.blogOv());
         model.addAttribute("blogBackOv",statisticsService.blogBackOv());
 
-        Map<String, Object> resultMap = visitService.getVisit();
+        //博客访问量统计
+        /*Map<String, Object> resultMap = visitService.getVisit();
         model.addAttribute("dateList",resultMap.get("dateList"));
-        model.addAttribute("totalCount",resultMap.get("totalCount"));
+        model.addAttribute("totalCount",resultMap.get("totalCount"));*/
+
+        //消息队列测试
+        helloSender1.send();
 
         return "home";
     }

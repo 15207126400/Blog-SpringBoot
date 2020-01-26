@@ -5,8 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ivan.blog.Exception.BizException;
 import com.ivan.blog.model.tool.DateModel;
+import com.ivan.blog.mq.hello.HelloSender1;
 import com.ivan.blog.service.impl.VisitServiceImpl;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -25,7 +30,6 @@ import java.util.stream.Collectors;
  *  @Date: 2019/11/1 18:49
  */
 public class test {
-
     public static void  main(String [] args) {
 
     }

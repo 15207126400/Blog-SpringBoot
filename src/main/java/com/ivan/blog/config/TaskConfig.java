@@ -42,6 +42,7 @@ public class TaskConfig implements SchedulingConfigurer {
     void logTask(ScheduledTaskRegistrar scheduledTaskRegistrar){
         //任务执行线程
         Runnable runnable = () -> {
+            //清除
             int result = sysLogMapper.reset();
             if(result > 0) {
                 log.info("执行定时任务--->> " + LocalDateTime.now().toLocalTime());
