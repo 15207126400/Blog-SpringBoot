@@ -15,8 +15,7 @@ public enum MqEnum {
     /**
      * 业务
      */
-    //DTTO 加评论邮箱提醒
-    COMMENT_QUEUE("commentQueue");
+    LOGIN_MAIL_QUEUE("loginMailQueue");             //登录邮件提醒
 
     /** 名称 */
     private String name;

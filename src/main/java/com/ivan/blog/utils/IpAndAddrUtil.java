@@ -1,6 +1,5 @@
 package com.ivan.blog.utils;
 
-
 import lombok.extern.slf4j.Slf4j;
 import nl.bitwalker.useragentutils.Browser;
 import nl.bitwalker.useragentutils.OperatingSystem;

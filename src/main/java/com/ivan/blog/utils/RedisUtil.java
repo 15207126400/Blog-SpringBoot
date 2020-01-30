@@ -1,8 +1,8 @@
 package com.ivan.blog.utils;
 
-/*  key设计
+/*
  *  @Author: Ivan
- *  @Description:
+ *  @Description:   redis - key设计
  *  @Date: 2019/12/16 20:27
  */
 public class RedisUtil {

@@ -8,12 +8,13 @@ import java.util.concurrent.TimeUnit;
 import com.alibaba.fastjson.JSONObject;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysUser;
-import com.ivan.blog.mq.hello.HelloReceiver1;
+import com.ivan.blog.model.tool.UserinfoModel;
 import com.ivan.blog.mq.hello.HelloSender1;
+import com.ivan.blog.mq.mail.MailProduce;
 import com.ivan.blog.service.*;
 import com.ivan.blog.utils.CurrentUserUtil;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -44,6 +45,9 @@ public class LoginController {
     @Resource
     private HelloSender1 helloSender1;
 
+    @Resource
+    private MailProduce mailProduce;
+
     //用户登录次数计数  redisKey 前缀
     private String SHIRO_LOGIN_COUNT = "shiro-login-count";
     //用户登录是否被锁定    一小时 redisKey 前缀
@@ -67,12 +71,23 @@ public class LoginController {
         model.addAttribute("blogBackOv",statisticsService.blogBackOv());
 
         //博客访问量统计
-        /*Map<String, Object> resultMap = visitService.getVisit();
+        Map<String, Object> resultMap = visitService.getVisit();
         model.addAttribute("dateList",resultMap.get("dateList"));
-        model.addAttribute("totalCount",resultMap.get("totalCount"));*/
+        model.addAttribute("totalCount",resultMap.get("totalCount"));
 
         //消息队列测试
-        helloSender1.send();
+        //helloSender1.send();
+
+        /*String userinfo = "{\"login\":\"15207126400\",\"id\":32918639,\"node_id\":\"MDQ6VXNlcjMyOTE4NjM5\",\"avatar_url\":\"https://avatars0.githubusercontent.com/u/32918639?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/15207126400\",\"html_url\":\"https://github.com/15207126400\",\"followers_url\":\"https://api.github.com/users/15207126400/followers\",\"following_url\":\"https://api.github.com/users/15207126400/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/15207126400/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/15207126400/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/15207126400/subscriptions\",\"organizations_url\":\"https://api.github.com/users/15207126400/orgs\",\"repos_url\":\"https://api.github.com/users/15207126400/repos\",\"events_url\":\"https://api.github.com/users/15207126400/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/15207126400/received_events\",\"type\":\"User\",\"site_admin\":false,\"name\":\"Ivan\",\"company\":null,\"blog\":\"http://blog.ivan.group\",\"location\":\"HuBei, China\",\"email\":\"286835776@qq.com\",\"hireable\":null,\"bio\":\"m15207126400@163.com\",\"public_repos\":2,\"public_gists\":0,\"followers\":1,\"following\":1,\"created_at\":\"2017-10-19T02:28:30Z\",\"updated_at\":\"2020-01-29T07:57:09Z\"}";
+        if(StringUtils.isNotBlank(userinfo)){
+            JSONObject user = JSONObject.parseObject(userinfo);
+            if(StringUtils.isNotBlank(user.getString("email"))){
+                String email = user.getString("email");
+                String toEmail = email.replace("\"", "");
+                //消费消息 ---登录邮件提示
+                mailProduce.send(toEmail);
+            }
+        }*/
 
         return "home";
     }

@@ -2,9 +2,10 @@ package com.ivan.blog.utils;
 
 import java.util.Random;
 
-/**
- * <p>随机工具类</p>
- * @version:1.0
+/*
+ *  @Author: Ivan
+ *  @Description:   随机数工具类
+ *  @Date: 2019/11/29 17:01
  */
 public class RandomsUtil
 {

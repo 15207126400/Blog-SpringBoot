@@ -5,11 +5,10 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
 
-/**
- * 响应信息主体
- *
- * @param <T>
- * @author dzl
+/*
+ *  @Author: Ivan
+ *  @Description:   响应信息主体
+ *  @Date: 2019/11/29 17:01
  */
 @Builder
 @ToString

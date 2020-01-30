@@ -1,10 +1,21 @@
 package com.ivan.blog.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ivan.blog.model.tool.UserinfoModel;
+import com.ivan.blog.mq.Enum.MqEnum;
+import com.ivan.blog.mq.mail.MailForbrug;
+import com.ivan.blog.mq.mail.MailProduce;
 import com.ivan.blog.service.SignService;
 import com.ivan.blog.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +29,9 @@ public class SignServiceImpl implements SignService {
     private final String GITHUB_CLIENT_ID = "6f44473f8efbb96f16fc";
     //github的client_secret
     private final String GITHUB_CLIENT_SECRET = "3552444809655c7d47b60a2a6b3f8a63742339d3";
+
+    @Resource
+    private MailProduce mailProduce;
 
     @Override
     public String githubSign(String code) {
@@ -34,8 +48,16 @@ public class SignServiceImpl implements SignService {
             //请求用户信息
             String path = "https://api.github.com/user?" + access_token;
             userinfo = HttpUtil.doGet(path);
-            log.info("userinfo: " + userinfo);
+            if(StringUtils.isNotBlank(userinfo)){
+                JSONObject user = JSONObject.parseObject(userinfo);
+                if(StringUtils.isNotBlank(user.getString("email"))){
+                    String email = user.getString("email");
+                    //消费消息 ---登录邮件提示
+                    mailProduce.send(email);
+                }
+            }
         }
+        log.info("userinfo: " + userinfo);
 
         return userinfo;
     }

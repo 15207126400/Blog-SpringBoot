@@ -4,9 +4,12 @@ import com.ivan.blog.mq.Enum.MqEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +24,6 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @AllArgsConstructor
 public class RabbitmqConfig {
-    //public final static String queueName = "helloQueue";
-
     private final CachingConnectionFactory connectionFactory;
 
     @Bean
@@ -31,8 +32,8 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Queue userQueue() {
-        return new Queue("user");
+    public Queue loginMailQueue() {
+        return new Queue(MqEnum.LOGIN_MAIL_QUEUE.getName());
     }
 
     @Bean
@@ -146,9 +147,11 @@ public class RabbitmqConfig {
         //若使用confirm-callback或return-callback，必须要配置publisherConfirms或publisherReturns为true
         //每个rabbitTemplate只能有一个confirm-callback和return-callback，如果这里配置了，那么写生产者的时候不能再写confirm-callback和return-callback
         //使用return-callback时必须设置mandatory为true，或者在配置中设置mandatory-expression的值为true
+
         connectionFactory.setPublisherConfirms(true);
         connectionFactory.setPublisherReturns(true);
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         rabbitTemplate.setMandatory(true);
         /**
          * 如果消息没有到exchange,则confirm回调,ack=false

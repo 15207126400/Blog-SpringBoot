@@ -7,12 +7,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * 解释一下SFTP的整个调用过程，这个过程就是通过Ip、Port、Username、Password获取一个Session,
- * 然后通过Session打开SFTP通道（获得SFTP Channel对象）,再在建立通道（Channel）连接，最后我们就是
- * 通过这个Channel对象来调用SFTP的各种操作方法.总是要记得，我们操作完SFTP需要手动断开Channel连接与Session连接。
- * @author jiashubing
- * @since 2018/5/8
+/*
+ *  @Author: Ivan
+ *  @Description:   解释一下SFTP的整个调用过程，这个过程就是通过Ip、Port、Username、Password获取一个Session,
+ *                  然后通过Session打开SFTP通道（获得SFTP Channel对象）,再在建立通道（Channel）连接，最后我们就是
+ *                  通过这个Channel对象来调用SFTP的各种操作方法.总是要记得，我们操作完SFTP需要手动断开Channel连接与Session连接。
+ *  @Date: 2019/11/29 17:01
  */
 public class SFtpUtil {
 	

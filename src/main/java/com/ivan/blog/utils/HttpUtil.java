@@ -11,8 +11,10 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-/**
- * http 请求工具类
+/*
+ *  @Author: Ivan
+ *  @Description:   http 请求工具类
+ *  @Date: 2019/12/28 19:32
  */
 @Slf4j
 public class HttpUtil {
