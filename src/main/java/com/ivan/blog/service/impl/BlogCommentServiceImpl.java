@@ -61,6 +61,11 @@ public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogC
             blogComment.setLadder(count + 1);
         }
 
+        //如果没有昵称,则设置默认昵称
+        if(StringUtils.isNotBlank(blogComment.getName())){
+            blogComment.setName("匿名用户");
+        }
+
         //保存评论
         blogCommentMapper.insert(blogComment);
     }
