@@ -62,7 +62,7 @@ public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogC
         }
 
         //如果没有昵称,则设置默认昵称
-        if(StringUtils.isNotBlank(blogComment.getName())){
+        if(StringUtils.isBlank(blogComment.getName())){
             blogComment.setName("匿名用户");
         }
 
