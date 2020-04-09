@@ -1,6 +1,5 @@
 package com.ivan.blog.annotation.aspect;
 
-import com.ivan.blog.Exception.BizException;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysLog;
 import com.ivan.blog.model.SysUser;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.Date;
 

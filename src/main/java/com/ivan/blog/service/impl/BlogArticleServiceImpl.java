@@ -117,7 +117,9 @@ public class BlogArticleServiceImpl extends ServiceImpl<BlogArticleMapper, BlogA
     @Override
     public List<BlogArticleDTO> getArticleList() {
         LambdaQueryWrapper<BlogArticle> lambdaQueryCategory = Wrappers.<BlogArticle>lambdaQuery()
-                .orderByAsc(BlogArticle::getIsTop);
+                .orderByDesc(BlogArticle::getIsTop)
+                .orderByDesc(BlogArticle::getCreateTime);
+
         List<BlogArticle> articles = blogArticleMapper.selectList(lambdaQueryCategory);
         List<BlogArticleDTO> result = new ArrayList<>();
         for(BlogArticle item : articles){
@@ -144,7 +146,7 @@ public class BlogArticleServiceImpl extends ServiceImpl<BlogArticleMapper, BlogA
     public BlogArticle selectArticleByBefore(Integer id) {
         LambdaQueryWrapper<BlogArticle> queryWrapper = Wrappers.<BlogArticle>lambdaQuery()
                 .lt(BlogArticle::getId,id)
-                .orderByDesc(BlogArticle::getId)
+                .orderByDesc(BlogArticle::getCreateTime)
                 .last("limit 1");
 
         return blogArticleMapper.selectOne(queryWrapper);

@@ -49,19 +49,19 @@ public class TaskConfig implements SchedulingConfigurer {
             }
         };
 
-        //任务触发器
-        Trigger trigger = triggerContext -> {
-            //获取定时触发器，这里可以每次从数据库获取最新记录，更新触发器，实现定时间隔的动态调整
-            LambdaQueryWrapper<SysTimed> lambdaQueryWrapper = Wrappers.<SysTimed>lambdaQuery()
-                    .eq(SysTimed::getId,1)
-                    .eq(SysTimed::getStatus,1);
-            SysTimed timed = sysTimedMapper.selectOne(lambdaQueryWrapper);
-            String cron = timed.getCron();
-
-            return new CronTrigger(cron).nextExecutionTime(triggerContext);
-        };
-
-        //注册任务
-        scheduledTaskRegistrar.addTriggerTask(runnable, trigger);
+        LambdaQueryWrapper<SysTimed> lambdaQueryWrapper = Wrappers.<SysTimed>lambdaQuery()
+                .eq(SysTimed::getId,1)
+                .eq(SysTimed::getStatus,1);
+        SysTimed timed = sysTimedMapper.selectOne(lambdaQueryWrapper);
+        if(timed != null) {
+            //任务触发器
+            Trigger trigger = triggerContext -> {
+                //获取定时触发器，这里可以每次从数据库获取最新记录，更新触发器，实现定时间隔的动态调整
+                String cron = timed.getCron();
+                return new CronTrigger(cron).nextExecutionTime(triggerContext);
+            };
+            //注册任务
+            scheduledTaskRegistrar.addTriggerTask(runnable, trigger);
+        }
     }
 }

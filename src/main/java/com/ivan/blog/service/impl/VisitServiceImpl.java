@@ -18,8 +18,10 @@ import java.util.*;
 @Service
 @Slf4j
 public class VisitServiceImpl implements VisitService {
+    //服务器统计数据
+    public final static String FILE_PATH = System.getProperty("os.name").toLowerCase().startsWith("win") ? "E:/visit-count.txt" : "/home/ftp/files/blog/visit-count.txt";
 
-    public final static String FILE_PATH = "/home/ftp/files/blog/visit-count.txt";
+    //本地统计数据
     //public final static String FILE_PATH = "E:/visit-count.txt";
 
     @Override

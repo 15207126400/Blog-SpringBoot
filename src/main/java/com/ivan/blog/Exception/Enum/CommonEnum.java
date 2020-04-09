@@ -36,4 +36,19 @@ public enum  CommonEnum{
     /** 错误描述 */
     private String resultMsg;
 
+    public static CommonEnum getValueByCode(Integer code){
+        for(CommonEnum commonEnum : CommonEnum.values()){
+            if(code.equals(commonEnum.getResultCode())){
+                return commonEnum;
+            }
+        }
+        return  null;
+    }
+
+    public static void main(String[] args) {
+        CommonEnum commonEnum = getValueByCode(001);
+        System.out.println(commonEnum.getResultCode());
+        System.out.println(commonEnum.getResultMsg());
+    }
+
 }
