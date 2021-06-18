@@ -1,20 +1,13 @@
 package com.ivan.blog.controller;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import com.alibaba.fastjson.JSONObject;
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.model.SysUser;
-import com.ivan.blog.model.tool.UserinfoModel;
-import com.ivan.blog.mq.hello.HelloSender1;
 import com.ivan.blog.mq.mail.MailProduce;
-import com.ivan.blog.service.*;
+import com.ivan.blog.service.StatisticsService;
+import com.ivan.blog.service.SysUserService;
+import com.ivan.blog.service.VisitService;
 import com.ivan.blog.utils.CurrentUserUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -28,7 +21,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @Slf4j
@@ -42,8 +40,6 @@ public class LoginController {
     private StatisticsService statisticsService;
     @Resource
     private VisitService visitService;
-    @Resource
-    private HelloSender1 helloSender1;
 
     @Resource
     private MailProduce mailProduce;

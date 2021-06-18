@@ -1,21 +1,19 @@
 package com.ivan.blog.controller;
 
 import com.ivan.blog.annotation.MyLog;
-import com.ivan.blog.model.SysRole;
-import com.ivan.blog.model.SysUser;
 import com.ivan.blog.model.dto.SysUserDTO;
 import com.ivan.blog.service.SysRoleService;
 import com.ivan.blog.service.SysUserService;
-import com.ivan.blog.utils.CurrentUserUtil;
 import com.ivan.blog.utils.MD5Util;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.HashMap;
 import java.util.Map;
 

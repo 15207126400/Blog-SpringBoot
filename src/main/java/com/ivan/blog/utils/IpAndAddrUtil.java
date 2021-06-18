@@ -5,12 +5,12 @@ import nl.bitwalker.useragentutils.Browser;
 import nl.bitwalker.useragentutils.OperatingSystem;
 import nl.bitwalker.useragentutils.UserAgent;
 import nl.bitwalker.useragentutils.Version;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -93,70 +93,6 @@ public class IpAndAddrUtil {
     }
 
     /**
-     *
-     * @param content
-     *   请求的参数 格式为：name=xxx&pwd=xxx
-     * @param encodingString
-     *   服务器端请求编码。如GBK,UTF-8等
-     * @return
-     * @throws UnsupportedEncodingException
-     */
-    public static String getAddresses(String content, String encodingString){
-        // 这里调用淘宝的接口
-        String urlStr = "http://ip.taobao.com/service/getIpInfo.php";
-        // 从http://whois.pconline.com.cn取得IP所在的省市区信息
-        String returnStr = getResult(urlStr, content, encodingString);
-        if (returnStr != null) {
-            // 处理返回的省市区信息
-            System.out.println(returnStr);
-            String[] temp = returnStr.split(",");
-            if(temp.length<3){
-                return "0";//无效IP，局域网测试
-            }
-            String region = (temp[5].split(":"))[1].replaceAll("\"", "");
-            region = decodeUnicode(region);// 省份
-
-            String country = "";
-            String area = "";
-            // String region = "";
-            String city = "";
-            String county = "";
-            String isp = "";
-            for (int i = 0; i < temp.length; i++) {
-                switch (i) {
-                    case 1:
-                        country = (temp[i].split(":"))[2].replaceAll("\"", "");
-                        country = decodeUnicode(country);// 国家
-                        break;
-                    case 3:
-                        area = (temp[i].split(":"))[1].replaceAll("\"", "");
-                        area = decodeUnicode(area);// 地区
-                        break;
-                    case 5:
-                        region = (temp[i].split(":"))[1].replaceAll("\"", "");
-                        region = decodeUnicode(region);// 省份
-                        break;
-                    case 7:
-                        city = (temp[i].split(":"))[1].replaceAll("\"", "");
-                        city = decodeUnicode(city);// 市区
-                        break;
-                    case 9:
-                        county = (temp[i].split(":"))[1].replaceAll("\"", "");
-                        county = decodeUnicode(county);// 地区
-                        break;
-                    case 11:
-                        isp = (temp[i].split(":"))[1].replaceAll("\"", "");
-                        isp = decodeUnicode(isp); // ISP公司
-                        break;
-                }
-            }
-
-            System.out.println(country+"="+area+"="+region+"="+city+"="+county+"="+isp);
-            return region;
-        }
-        return null;
-    }
-    /**
      * @param urlStr
      *   请求的地址
      * @param content
@@ -202,6 +138,7 @@ public class IpAndAddrUtil {
         }
         return null;
     }
+
     /**
      * unicode 转换成 中文
      *
@@ -275,12 +212,4 @@ public class IpAndAddrUtil {
         return outBuffer.toString();
     }
 
-
-    // 测试
-    public static void main(String[] args) {
-        String ip = "27.18.104.199";
-        String address = "";
-        address = getAddresses("ip="+ip, "utf-8");
-        System.out.println(address);
-    }
 }

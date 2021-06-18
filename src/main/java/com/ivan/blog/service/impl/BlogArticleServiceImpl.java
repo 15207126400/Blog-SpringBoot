@@ -117,7 +117,7 @@ public class BlogArticleServiceImpl extends ServiceImpl<BlogArticleMapper, BlogA
     @Override
     public List<BlogArticleDTO> getArticleList() {
         LambdaQueryWrapper<BlogArticle> lambdaQueryCategory = Wrappers.<BlogArticle>lambdaQuery()
-                .orderByDesc(BlogArticle::getIsTop)
+                .orderByAsc(BlogArticle::getIsTop)
                 .orderByDesc(BlogArticle::getCreateTime);
 
         List<BlogArticle> articles = blogArticleMapper.selectList(lambdaQueryCategory);

@@ -3,7 +3,6 @@ package com.ivan.blog.utils;
 import com.jcraft.jsch.*;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -23,7 +22,7 @@ public class SFtpUtil {
 	 使用端口号、用户名、密码以连接SFTP服务器
 	 */
     public SFtpUtil() {
-    	 this.connectServer("39.106.89.216", 22, "root", "Qinoupp815");
+    	 this.connectServer("127.0.0.1", 22, "root", "123456");
     }
     
     public SFtpUtil(String ftpHost, int ftpPort, String ftpUserName, String ftpPassword) {
@@ -170,19 +169,6 @@ public class SFtpUtil {
         } catch (SftpException e) {
             //e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        SFtpUtil sftp = new SFtpUtil();
-        //上传测试
-        String localfile = "E:/lalala/tt.xlsx";
-        String remotefile = "/home/ftp/tt2.xlsx";
-        //sftp.upload(localfile, remotefile);
-
-        //下载测试
-        sftp.download(remotefile, "E:/lalala/tt3.xlsx");
-
-        sftp.closeChannel();
     }
 
 }

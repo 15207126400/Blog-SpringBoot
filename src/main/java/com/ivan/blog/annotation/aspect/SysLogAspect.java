@@ -82,12 +82,6 @@ public class SysLogAspect {
             sysLog.setIp(ip);
         }
 
-        //获取ip所在地
-        if(StringUtils.isNotBlank(ip)){
-            String address = IpAndAddrUtil.getAddresses("ip=" + ip, "utf-8");
-            sysLog.setAddress(address);
-        }
-
         //获取浏览器名称
         String browserName = IpAndAddrUtil.getBrowserName(request);
         if(StringUtils.isNotBlank(browserName)){

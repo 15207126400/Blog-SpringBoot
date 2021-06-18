@@ -2,7 +2,6 @@ package com.ivan.blog.utils;
 
 import com.ivan.blog.Exception.BizException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;

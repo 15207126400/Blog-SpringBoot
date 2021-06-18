@@ -1,7 +1,6 @@
 package com.ivan.blog.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ivan.blog.model.BlogComment;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;

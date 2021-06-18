@@ -4,11 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ivan.blog.dao.SysLogMapper;
 import com.ivan.blog.model.SysLog;
 import com.ivan.blog.service.SysLogService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 
 /*
  *  @Author: Ivan

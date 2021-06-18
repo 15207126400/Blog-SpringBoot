@@ -1,17 +1,13 @@
 package com.ivan.blog.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ivan.blog.dao.SysRoleMapper;
-import com.ivan.blog.dao.SysUserMapper;
 import com.ivan.blog.model.SysPermission;
 import com.ivan.blog.model.SysRole;
 import com.ivan.blog.model.SysRolePermission;
-import com.ivan.blog.model.SysUser;
 import com.ivan.blog.model.tool.TreeModel;
 import com.ivan.blog.service.SysPermissionService;
 import com.ivan.blog.service.SysRolePermissionService;
 import com.ivan.blog.service.SysRoleService;
-import com.ivan.blog.service.SysUserService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

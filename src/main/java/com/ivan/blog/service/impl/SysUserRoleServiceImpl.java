@@ -3,7 +3,6 @@ package com.ivan.blog.service.impl;
 import com.ivan.blog.dao.SysUserRoleMapper;
 import com.ivan.blog.model.SysUserRole;
 import com.ivan.blog.service.SysUserRoleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -17,8 +17,8 @@ public class MailServiceImpl implements MailService {
     private JavaMailSender mailSender;
 
     private static final String HOST = "smtp.163.com";
-    private static final String USERNAME = "15207126400@163.com";
-    private static final String PASSWORD = "qinoupp918";
+    private static final String USERNAME = "xxxxxx@163.com";
+    private static final String PASSWORD = "xxxxxx";
 
     @Override
     public void sendSimpleMail(EmailModel emailModel){

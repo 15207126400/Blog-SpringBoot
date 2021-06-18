@@ -2,7 +2,6 @@ package com.ivan.blog.controller;
 
 import com.ivan.blog.annotation.MyLog;
 import com.ivan.blog.dao.BlogArticlePictureMapper;
-import com.ivan.blog.model.BlogArticle;
 import com.ivan.blog.model.BlogArticlePicture;
 import com.ivan.blog.model.BlogCategory;
 import com.ivan.blog.model.SysDict;
